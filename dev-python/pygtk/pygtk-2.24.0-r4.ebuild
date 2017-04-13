@@ -1,5 +1,6 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI="5"
 GCONF_DEBUG="no"
@@ -13,7 +14,7 @@ HOMEPAGE="http://www.pygtk.org/"
 
 LICENSE="LGPL-2.1"
 SLOT="2"
-KEYWORDS="alpha amd64 arm ~arm64 hppa ia64 ~mips ppc ppc64 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="alpha amd64 arm ~arm64 hppa ia64 ~mips ppc ppc64 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~sparc-solaris ~x64-solaris ~x86-solaris"
 IUSE="doc examples test"
 
 RDEPEND="
@@ -46,9 +47,6 @@ src_prepare() {
 
 	# Fix broken tests, https://bugzilla.gnome.org/show_bug.cgi?id=709304
 	epatch "${FILESDIR}/${P}-test_dialog.patch"
-
-	# Fix build on Darwin
-	epatch "${FILESDIR}/${PN}-2.24.0-quartz-objc.patch"
 
 	# Examples is handled "manually"
 	sed -e 's/\(SUBDIRS = .* \)examples/\1/' \

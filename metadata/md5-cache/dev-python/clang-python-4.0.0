@@ -1,0 +1,13 @@
+DEFINED_PHASES=install test
+DEPEND=>=sys-devel/clang-4.0.0:* !sys-devel/llvm:0[clang(-),python(-)] !sys-devel/clang:0[python(-)] python_targets_python2_7? ( >=dev-lang/python-2.7.5-r2:2.7 ) >=dev-lang/python-exec-2:=[python_targets_python2_7(-)?,-python_single_target_python2_7(-)] test? ( dev-python/nose[python_targets_python2_7(-)?,-python_single_target_python2_7(-)] )
+DESCRIPTION=Python bindings for sys-devel/clang
+EAPI=6
+HOMEPAGE=http://llvm.org/
+IUSE=test python_targets_python2_7
+KEYWORDS=~amd64 ~arm64 ~x86
+LICENSE=UoI-NCSA
+RDEPEND=>=sys-devel/clang-4.0.0:* !sys-devel/llvm:0[clang(-),python(-)] !sys-devel/clang:0[python(-)] python_targets_python2_7? ( >=dev-lang/python-2.7.5-r2:2.7 ) >=dev-lang/python-exec-2:=[python_targets_python2_7(-)?,-python_single_target_python2_7(-)]
+SLOT=0
+SRC_URI=http://releases.llvm.org/4.0.0/cfe-4.0.0.src.tar.xz
+_eclasses_=multibuild	742139c87a9fa3766f0c2b155e5522bf	multilib	165fc17c38d1b11dac2008280dab6e80	python-r1	0c067f080a047742ffac024b16895b45	python-utils-r1	a166d0f5815d7f1e67bb60a196f1bf7e	toolchain-funcs	1b1da0c45c555989dc5d832b54880783
+_md5_=94bf7e9dee0d9f172bc046d23535bc0e
