@@ -11,7 +11,4 @@
 	<longdescription lang="en">
 		A fast and modern Python SOAP client
 	</longdescription>
-	<use>
-		<flag name="async">Add async support</flag>
-	</use>
 </pkgmetadata>

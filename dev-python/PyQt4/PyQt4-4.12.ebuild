@@ -1,13 +1,15 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( python2_7 python3_{4,5} )
 
 inherit multibuild python-r1 qmake-utils toolchain-funcs
 
 DESCRIPTION="Python bindings for the Qt framework"
-HOMEPAGE="https://www.riverbankcomputing.com/software/pyqt/intro"
+HOMEPAGE="http://www.riverbankcomputing.com/software/pyqt/intro
+	https://pypi.python.org/pypi/PyQt4"
 
 MY_P=${PN}_gpl_x11-${PV/_pre/.dev}
 if [[ ${PV} == *_pre* ]]; then
@@ -18,7 +20,7 @@ fi
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="alpha amd64 arm ~ia64 ppc ppc64 ~sparc x86 ~amd64-linux ~x86-linux"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~amd64-linux ~x86-linux"
 
 IUSE="X compat dbus debug declarative designer doc examples help kde multimedia
 	opengl phonon script scripttools sql svg testlib webkit xmlpatterns"

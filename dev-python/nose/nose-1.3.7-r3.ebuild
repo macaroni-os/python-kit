@@ -1,9 +1,10 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
 
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} pypy pypy3 )
+PYTHON_COMPAT=( python2_7 python3_{4,5} pypy pypy3 )
 PYTHON_REQ_USE="threads(+)"
 
 inherit distutils-r1
@@ -28,9 +29,8 @@ RDEPEND="
 	dev-python/setuptools[${PYTHON_USEDEP}]"
 DEPEND="${RDEPEND}
 	doc? ( >=dev-python/sphinx-0.6[${PYTHON_USEDEP}] )
-	test? ( || ( $(python_gen_cond_dep 'dev-python/twisted[${PYTHON_USEDEP}]' python2_7 python3_{4,5,6})
-			$(python_gen_cond_dep 'dev-python/twisted-core[${PYTHON_USEDEP}]' python2_7)
-		 ) )"
+	test? ( || ( $(python_gen_cond_dep 'dev-python/twisted-core[${PYTHON_USEDEP}]' python2_7)
+		 $(python_gen_cond_dep 'dev-python/twisted[${PYTHON_USEDEP}]' python2_7) ) )"
 
 PATCHES=(
 	"${FILESDIR}"/${P}-python-3.5-backport.patch
@@ -38,8 +38,6 @@ PATCHES=(
 	# Patch against master found in an upstream PR, backported:
 	# https://github.com/nose-devs/nose/pull/1004
 	"${FILESDIR}"/${P}-coverage-4.1-support.patch
-
-	"${FILESDIR}"/${P}-python-3.6-test.patch
 )
 
 pkg_setup() {

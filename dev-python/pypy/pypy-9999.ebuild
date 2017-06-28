@@ -1,5 +1,6 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=5
 
@@ -7,18 +8,15 @@ PYTHON_COMPAT=( python2_7 pypy )
 EHG_REPO_URI="https://bitbucket.org/pypy/pypy"
 inherit check-reqs eutils mercurial multilib multiprocessing pax-utils python-any-r1 toolchain-funcs versionator
 
-# note: remember to update this to newest dev-lang/python:2.7 on bump
-CPY_PATCHSET_VERSION="2.7.11-0"
-MY_P=pypy2-v${PV}
+CPY_PATCHSET_VERSION="2.7.10-0"
 
 DESCRIPTION="A fast, compliant alternative implementation of the Python language"
 HOMEPAGE="http://pypy.org/"
 SRC_URI="
-	https://dev.gentoo.org/~djc/python-gentoo-patches-${CPY_PATCHSET_VERSION}.tar.xz"
+	https://dev.gentoo.org/~floppym/python/python-gentoo-patches-${CPY_PATCHSET_VERSION}.tar.xz"
 
 LICENSE="MIT"
-# pypy -c 'import sysconfig; print sysconfig.get_config_var("SOABI")'
-SLOT="0/41"
+SLOT="0/$(get_version_component_range 1-2 ${PV})"
 KEYWORDS=""
 IUSE="bzip2 doc gdbm +jit libressl low-memory ncurses sandbox +shadowstack sqlite cpu_flags_x86_sse2 test tk"
 
@@ -42,7 +40,7 @@ DEPEND="${RDEPEND}
 	${PYTHON_DEPS}
 	test? ( dev-python/pytest )"
 
-S="${WORKDIR}/${MY_P}-src"
+S="${WORKDIR}/${P}-src"
 
 pkg_pretend() {
 	if [[ ${MERGE_TYPE} != binary ]]; then
@@ -103,7 +101,7 @@ src_prepare() {
 
 	# apply CPython stdlib patches
 	pushd lib-python/2.7 > /dev/null || die
-	epatch "${FILESDIR}"/5.6.0_all_distutils_cxx.patch \
+	epatch "${FILESDIR}"/2.5.0_all_distutils_cxx.patch \
 		"${WORKDIR}"/patches/22_all_turkish_locale.patch \
 		"${WORKDIR}"/patches/62_all_xml.use_pyxml.patch
 	popd > /dev/null || die
@@ -111,7 +109,7 @@ src_prepare() {
 	epatch_user
 }
 
-src_configure() {
+src_compile() {
 	tc-export CC
 
 	local jit_backend
@@ -168,22 +166,12 @@ src_configure() {
 			"${PYTHON}" --jit loop_longevity=300 )
 	fi
 
-	# translate into the C sources
-	# we're going to make them ourselves since otherwise pypy does not
-	# free up the unneeded memory before spawning the compiler
-	set -- "${interp[@]}" rpython/bin/rpython --batch --source "${args[@]}"
+	set -- "${interp[@]}" rpython/bin/rpython --batch "${args[@]}"
 	echo -e "\033[1m${@}\033[0m"
-	"${@}" || die "translation failed"
-}
+	"${@}" || die "compile error"
 
-src_compile() {
-	emake -C "${T}"/usession*-0/testing_1
-
-	# copy back to make sys.prefix happy
-	cp -p "${T}"/usession*-0/testing_1/{pypy-c,libpypy-c.so} . || die
+	use doc && emake -C pypy/doc/ html
 	pax-mark m pypy-c libpypy-c.so
-
-	use doc && emake -C pypy/doc html
 }
 
 src_test() {
@@ -196,11 +184,10 @@ src_test() {
 src_install() {
 	local dest=/usr/$(get_libdir)/pypy
 	einfo "Installing PyPy ..."
-	exeinto "${dest}"
-	doexe pypy-c libpypy-c.so
-	pax-mark m "${ED%/}${dest}/pypy-c" "${ED%/}${dest}/libpypy-c.so"
 	insinto "${dest}"
-	doins -r include lib_pypy lib-python
+	doins -r include lib_pypy lib-python pypy-c libpypy-c.so
+	fperms a+x ${dest}/pypy-c ${dest}/libpypy-c.so
+	pax-mark m "${ED%/}${dest}/pypy-c" "${ED%/}${dest}/libpypy-c.so"
 	dosym ../$(get_libdir)/pypy/pypy-c /usr/bin/pypy
 	dodoc README.rst
 

@@ -1,5 +1,6 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=5
 
@@ -11,16 +12,12 @@ EHG_REVISION="py3k"
 inherit check-reqs eutils mercurial multilib multiprocessing pax-utils \
 	python-any-r1 toolchain-funcs versionator
 
-CPY_PATCHSET_VERSION="3.3.5-0"
-
-DESCRIPTION="A fast, compliant alternative implementation of the Python (3.3) language"
+DESCRIPTION="A fast, compliant alternative implementation of Python 3"
 HOMEPAGE="http://pypy.org/"
-SRC_URI="
-	https://dev.gentoo.org/~floppym/python-gentoo-patches-${CPY_PATCHSET_VERSION}.tar.xz"
+SRC_URI=""
 
 LICENSE="MIT"
-# XX from pypy3-XX.so module suffix
-SLOT="0/55"
+SLOT="0/$(get_version_component_range 1-2 ${PV})"
 KEYWORDS=""
 IUSE="bzip2 gdbm +jit libressl low-memory ncurses sandbox +shadowstack sqlite cpu_flags_x86_sse2 tk"
 
@@ -28,8 +25,8 @@ RDEPEND=">=sys-libs/zlib-1.1.3:0=
 	virtual/libffi:0=
 	virtual/libintl:0=
 	dev-libs/expat:0=
-	!libressl? ( dev-libs/openssl:0=[-bindist] )
-	libressl? ( dev-libs/libressl:0= )
+	!libressl? ( dev-libs/openssl:0= )
+	libressl? ( dev-libs/libressl:= )
 	bzip2? ( app-arch/bzip2:0= )
 	gdbm? ( sys-libs/gdbm:0= )
 	ncurses? ( sys-libs/ncurses:0= )
@@ -42,10 +39,8 @@ RDEPEND=">=sys-libs/zlib-1.1.3:0=
 DEPEND="${RDEPEND}
 	low-memory? ( virtual/pypy:0 )
 	!low-memory? ( ${PYTHON_DEPS} )"
-#	doc? ( dev-python/sphinx )
 
-# Who would care about predictable directory names?
-S="${WORKDIR}/pypy3-v${PV%_*}-src"
+S="${WORKDIR}/${P}-src"
 
 pkg_pretend() {
 	if [[ ${MERGE_TYPE} != binary ]]; then
@@ -96,14 +91,13 @@ src_prepare() {
 
 	# apply CPython stdlib patches
 	pushd lib-python/3 > /dev/null || die
-	epatch "${FILESDIR}"/5.2.0-distutils-c++.patch \
-		"${WORKDIR}"/patches/24_all_sqlite-3.8.4.patch
+	epatch "${FILESDIR}"/5.2.0-distutils-c++.patch
 	popd > /dev/null || die
 
 	epatch_user
 }
 
-src_configure() {
+src_compile() {
 	tc-export CC
 
 	local jit_backend
@@ -160,41 +154,21 @@ src_configure() {
 			"${PYTHON}" --jit loop_longevity=300 )
 	fi
 
-	# translate into the C sources
-	# we're going to make them ourselves since otherwise pypy does not
-	# free up the unneeded memory before spawning the compiler
-	set -- "${interp[@]}" rpython/bin/rpython --batch --source "${args[@]}"
+	set -- "${interp[@]}" rpython/bin/rpython --batch "${args[@]}"
 	echo -e "\033[1m${@}\033[0m"
-	"${@}" || die "translation failed"
-}
+	"${@}" || die "compile error"
 
-src_compile() {
-	emake -C "${T}"/usession*-0/testing_1
-
-	# copy back to make sys.prefix happy
-	cp -p "${T}"/usession*-0/testing_1/{pypy-c,libpypy-c.so} . || die
+	#use doc && emake -C pypy/doc/ html
 	pax-mark m pypy-c libpypy-c.so
-
-	#use doc && emake -C pypy/doc html
-}
-
-src_test() {
-	# (unset)
-	local -x PYTHONDONTWRITEBYTECODE
-
-	# Test runner requires Python 2 too. However, it spawns PyPy3
-	# internally so that we end up testing the correct interpreter.
-	"${PYTHON}" ./pypy/test_all.py --pypy=./pypy-c lib-python || die
 }
 
 src_install() {
 	local dest=/usr/$(get_libdir)/pypy3
 	einfo "Installing PyPy ..."
-	exeinto "${dest}"
-	doexe pypy-c libpypy-c.so
-	pax-mark m "${ED%/}${dest}/pypy-c" "${ED%/}${dest}/libpypy-c.so"
 	insinto "${dest}"
-	doins -r include lib_pypy lib-python
+	doins -r include lib_pypy lib-python pypy-c libpypy-c.so
+	fperms a+x ${dest}/pypy-c ${dest}/libpypy-c.so
+	pax-mark m "${ED%/}${dest}/pypy-c" "${ED%/}${dest}/libpypy-c.so"
 	dosym ../$(get_libdir)/pypy3/pypy-c /usr/bin/pypy3
 	dodoc README.rst
 
@@ -240,12 +214,9 @@ src_install() {
 #    "tk": "_tkinter/tklib_build.py",
 #    "curses": "_curses_build.py" if sys.platform != "win32" else None,
 #    "syslog": "_syslog_build.py" if sys.platform != "win32" else None,
-#    "_gdbm": "_gdbm_build.py"  if sys.platform != "win32" else None,
+#    "gdbm": "_gdbm_build.py"  if sys.platform != "win32" else None,
 #    "pwdgrp": "_pwdgrp_build.py" if sys.platform != "win32" else None,
-#    "resource": "_resource_build.py" if sys.platform != "win32" else None,
-#    "lzma": "_lzma_build.py",
-#    "_decimal": "_decimal_build.py",
-	cffi_targets=( audioop syslog pwdgrp resource lzma decimal )
+	cffi_targets=( audioop syslog pwdgrp )
 	use gdbm && cffi_targets+=( gdbm )
 	use ncurses && cffi_targets+=( curses )
 	use sqlite && cffi_targets+=( sqlite3 )

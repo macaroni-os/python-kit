@@ -1,5 +1,6 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
 
@@ -10,7 +11,6 @@ inherit distutils-r1 git-r3
 DESCRIPTION="Python library for guessing information from video filenames"
 HOMEPAGE="https://github.com/guessit-io/guessit https://pypi.python.org/pypi/guessit"
 EGIT_REPO_URI=( {https,git}://github.com/${PN}-io/${PN}.git )
-EGIT_BRANCH="develop"
 
 LICENSE="LGPL-3"
 SLOT="0"

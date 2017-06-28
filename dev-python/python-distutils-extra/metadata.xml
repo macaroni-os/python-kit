@@ -7,6 +7,5 @@
 	</maintainer>
 	<upstream>
 		<remote-id type="launchpad">python-distutils-extra</remote-id>
-		<bugs-to>https://bugs.launchpad.net/python-distutils-extra</bugs-to>
 	</upstream>
 </pkgmetadata>

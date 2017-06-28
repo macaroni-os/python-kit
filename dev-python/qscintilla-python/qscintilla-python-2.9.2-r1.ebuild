@@ -1,5 +1,6 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
 PYTHON_COMPAT=( python2_7 python3_{4,5} )
@@ -9,7 +10,7 @@ inherit python-r1 qmake-utils
 MY_P=QScintilla_gpl-${PV}
 
 DESCRIPTION="Python bindings for Qscintilla"
-HOMEPAGE="https://www.riverbankcomputing.com/software/qscintilla/intro"
+HOMEPAGE="http://www.riverbankcomputing.com/software/qscintilla/intro"
 SRC_URI="mirror://sourceforge/pyqt/${MY_P}.tar.gz"
 
 LICENSE="GPL-3"
@@ -52,7 +53,7 @@ src_configure() {
 		"${myconf[@]}" || die
 
 		# Run eqmake4 to respect toolchain, build flags, and prevent stripping
-		eqmake4 -recursive
+		eqmake4
 	}
 	python_foreach_impl run_in_build_dir configuration
 }

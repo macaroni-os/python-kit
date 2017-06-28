@@ -1,4 +1,5 @@
 /var/log/flower/flower.log {
+	su flower flower
 	missingok
 	size 5M
 	rotate 3

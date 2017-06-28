@@ -1,5 +1,6 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=5
 
@@ -94,7 +95,7 @@ src_prepare() {
 	epatch_user
 }
 
-src_configure() {
+src_compile() {
 	tc-export CC
 
 	local jit_backend
@@ -151,22 +152,16 @@ src_configure() {
 			"${PYTHON}" --jit loop_longevity=300 )
 	fi
 
-	# translate into the C sources
-	# we're going to make them ourselves since otherwise pypy does not
-	# free up the unneeded memory before spawning the compiler
-	set -- "${interp[@]}" rpython/bin/rpython --batch --source "${args[@]}"
+	set -- "${interp[@]}" rpython/bin/rpython --batch "${args[@]}"
 	echo -e "\033[1m${@}\033[0m"
-	"${@}" || die "translation failed"
-}
+	"${@}" || die "compile error"
 
-src_compile() {
-	emake -C "${T}"/usession*-0/testing_1
-
-	# copy back to make sys.prefix happy
-	cp -p "${T}"/usession*-0/testing_1/{pypy-c,libpypy-c.so} . || die
+	# Exception occurred:
+	#  File "/tmp/1/pypy3-2.4.0-src/pypy/config/makerestdoc.py", line 199, in config_role
+	#    assert txt.check()
+	# AssertionError
+	#use doc && emake -C pypy/doc/ html
 	pax-mark m pypy-c libpypy-c.so
-
-	#use doc && emake -C pypy/doc html
 }
 
 src_test() {
@@ -181,11 +176,10 @@ src_test() {
 src_install() {
 	local dest=/usr/$(get_libdir)/pypy3
 	einfo "Installing PyPy ..."
-	exeinto "${dest}"
-	doexe pypy-c libpypy-c.so
-	pax-mark m "${ED%/}${dest}/pypy-c" "${ED%/}${dest}/libpypy-c.so"
 	insinto "${dest}"
-	doins -r include lib_pypy lib-python
+	doins -r include lib_pypy lib-python pypy-c libpypy-c.so
+	fperms a+x ${dest}/pypy-c ${dest}/libpypy-c.so
+	pax-mark m "${ED%/}${dest}/pypy-c" "${ED%/}${dest}/libpypy-c.so"
 	dosym ../$(get_libdir)/pypy3/pypy-c /usr/bin/pypy3
 	dodoc README.rst
 

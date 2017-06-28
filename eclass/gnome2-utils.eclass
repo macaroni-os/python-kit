@@ -1,5 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 # @ECLASS: gnome2-utils.eclass
 # @MAINTAINER:
@@ -99,12 +100,12 @@ gnome2_environment_reset() {
 	export GST_REGISTRY="${T}/registry.xml"
 
 	# Ensure we don't rely on dconf/gconf while building, bug #511946
-	export GSETTINGS_BACKEND="memory"
+	export GSETTINGS_BACKEND="memory" 
 
 	if has ${EAPI:-0} 6; then
 		# Try to cover the packages honoring this variable, bug #508124
 		export GST_INSPECT="$(type -P true)"
-
+		
 		# Stop relying on random DISPLAY variable values, bug #534312
 		unset DISPLAY
 	fi

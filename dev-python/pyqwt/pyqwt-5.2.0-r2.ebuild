@@ -20,8 +20,8 @@ IUSE="debug doc examples svg"
 
 RDEPEND="
 	dev-python/numpy[${PYTHON_USEDEP}]
-	<dev-python/PyQt4-4.12[${PYTHON_USEDEP},compat(+)]
-	<dev-python/sip-4.19[${PYTHON_USEDEP}]
+	dev-python/PyQt4[${PYTHON_USEDEP},compat(+)]
+	dev-python/sip[${PYTHON_USEDEP}]
 	x11-libs/qwt:5[svg?]"
 DEPEND="${RDEPEND}
 	doc? ( dev-python/sphinx[${PYTHON_USEDEP}] )"

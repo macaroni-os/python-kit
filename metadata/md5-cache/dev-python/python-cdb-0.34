@@ -1,0 +1,12 @@
+DEFINED_PHASES=compile install postinst postrm prepare test
+DEPEND=|| ( dev-db/cdb dev-db/tinycdb ) =dev-lang/python-2*
+DESCRIPTION=A Python extension module for cdb
+EAPI=3
+HOMEPAGE=http://pilcrow.madison.wi.us/#pycdb
+KEYWORDS=amd64 arm ia64 ppc sparc x86 ~x86-fbsd ~x86-freebsd ~amd64-linux ~x86-linux ~ppc-macos
+LICENSE=GPL-2
+RDEPEND=|| ( dev-db/cdb dev-db/tinycdb ) =dev-lang/python-2*
+SLOT=0
+SRC_URI=http://pilcrow.madison.wi.us/python-cdb/python-cdb-0.34.tar.gz
+_eclasses_=distutils	ad9e4720eb3e69090dd968b152fc611b	multilib	97f470f374f2e94ccab04a2fb21d811e	python	efc1c55fc44c5b7272fc2ffba73c3e6f	toolchain-funcs	6eb35f81556258a4bc9182ad3dfd58ee
+_md5_=9539e6c548e732e88a5905028adf66fe

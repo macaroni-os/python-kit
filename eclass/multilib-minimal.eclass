@@ -4,7 +4,7 @@
 
 # @ECLASS: multilib-minimal.eclass
 # @MAINTAINER:
-# Multilib team <multilib@gentoo.org>
+# Julian Ospald <hasufell@gentoo.org>
 # @BLURB: wrapper for multilib builds providing convenient multilib_src_* functions
 # @DESCRIPTION:
 #
