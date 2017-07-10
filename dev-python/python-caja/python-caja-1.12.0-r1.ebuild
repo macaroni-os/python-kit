@@ -1,5 +1,6 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
 
@@ -15,8 +16,8 @@ fi
 DESCRIPTION="Python bindings for the Caja file manager"
 LICENSE="GPL-2"
 SLOT="0"
+
 IUSE="doc gtk3"
-REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 RDEPEND="dev-libs/glib:2
 	dev-python/pygobject:3[${PYTHON_USEDEP}]

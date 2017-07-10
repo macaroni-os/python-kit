@@ -1,5 +1,6 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=5
 
@@ -16,10 +17,8 @@ LICENSE="LGPL-2.1 GPL-2"
 SLOT="0"
 KEYWORDS="alpha amd64 arm hppa ia64 ppc ppc64 ~sh sparc x86 ~x86-fbsd"
 IUSE="examples"
-REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
-RDEPEND="${PYTHON_DEPS}
-	>=dev-python/pygtk-2.8:2[${PYTHON_USEDEP}]
+RDEPEND=">=dev-python/pygtk-2.8:2[${PYTHON_USEDEP}]
 	>=dev-libs/glib-2.0:2
 	>=x11-libs/gtk+-2.0:2
 	>=x11-libs/gtkglext-1.0.0

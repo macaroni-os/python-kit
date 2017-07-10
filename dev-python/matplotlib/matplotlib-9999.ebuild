@@ -1,9 +1,10 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=5
 
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( python2_7 python3_{4,5} )
 
 PYTHON_REQ_USE='tk?,threads(+)'
 
@@ -253,10 +254,6 @@ python_test() {
 
 python_install() {
 	wrap_setup distutils-r1_python_install
-
-	# mpl_toolkits namespace
-	python_moduleinto mpl_toolkits
-	python_domodule lib/mpl_toolkits/__init__.py
 }
 
 python_install_all() {
@@ -268,6 +265,4 @@ python_install_all() {
 		dodoc -r examples
 		docompress -x /usr/share/doc/${PF}/examples
 	fi
-
-	find "${D}" -name '*.pth' -delete || die
 }

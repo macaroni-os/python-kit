@@ -1,8 +1,9 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
-PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6} )
+PYTHON_COMPAT=( python{2_7,3_4,3_5} )
 
 inherit distutils-r1 virtualx xdg-utils
 
@@ -33,8 +34,6 @@ PATCHES=(
 python_prepare_all() {
 	# use system astropy-helpers instead of bundled one
 	sed -i -e '/auto_use/s/True/False/' setup.cfg || die
-	echo "backend: Agg" > "${WORKDIR}"/matplotlibrc || die
-	export MATPLOTLIBRC="${WORKDIR}"
 	xdg_environment_reset
 	distutils-r1_python_prepare_all
 }

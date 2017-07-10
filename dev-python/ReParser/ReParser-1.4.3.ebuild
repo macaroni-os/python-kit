@@ -1,9 +1,10 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
 
-PYTHON_COMPAT=( python3_{4,5,6} )
+PYTHON_COMPAT=( python3_{4,5} )
 inherit distutils-r1
 
 if [[ ${PV} = *9999* ]]; then
@@ -14,11 +15,12 @@ else
 	KEYWORDS="~amd64"
 fi
 
-DESCRIPTION="Simple regex-based lexer/parser for inline markup"
+DESCRIPTION="simple regex-based lexer/parser for inline markup"
 HOMEPAGE="https://pypi.python.org/pypi/ReParser"
 
 LICENSE="MIT"
 SLOT="0"
 IUSE=""
 
-DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]"
+DEPEND="dev-python/setuptools"
+RDEPEND=""

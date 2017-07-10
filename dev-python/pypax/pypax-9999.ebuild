@@ -1,9 +1,10 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI="5"
 
-PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6} pypy )
+PYTHON_COMPAT=( python{2_7,3_4} pypy )
 
 inherit distutils-r1
 
@@ -12,7 +13,7 @@ if [[ ${PV} == "9999" ]] ; then
 	inherit git-2
 else
 	SRC_URI="https://dev.gentoo.org/~blueness/elfix/elfix-${PV}.tar.gz"
-	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
+	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 	S="${WORKDIR}/elfix-${PV}"
 fi
 
@@ -34,7 +35,7 @@ DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]
 	${RDEPEND}"
 
 src_compile() {
-	cd scripts || die
+	cd scripts
 	unset PTPAX
 	unset XTPAX
 	use ptpax && export PTPAX="yes"
@@ -43,6 +44,6 @@ src_compile() {
 }
 
 src_install() {
-	cd scripts || die
+	cd scripts
 	distutils-r1_src_install
 }

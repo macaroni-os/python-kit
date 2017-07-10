@@ -1,9 +1,10 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI="6"
 
-PYTHON_COMPAT=( python{2_7,3_{3,4}} )
+PYTHON_COMPAT=( python{2_7,3_{3,4,5}} )
 
 inherit distutils-r1
 
@@ -19,9 +20,9 @@ IUSE=""
 RDEPEND=""
 DEPEND="
 	${RDEPEND}
-	dev-python/setuptools[${PYTHON_USEDEP}]
+	dev-python/setuptools
 "
-PDEPEND=">=dev-python/django-cms-3.2.0[${PYTHON_USEDEP}]"
+PDEPEND=">=dev-python/django-cms-3.2.0"
 
 src_prepare() {
 	sed -i 's/find_packages()/find_packages(exclude=["tests"])/g' "${S}/setup.py"

@@ -1,0 +1,12 @@
+DEFINED_PHASES=compile install postinst postrm prepare
+DEPEND==dev-lang/python-2*
+DESCRIPTION=Cross-media, cross-platform 2D graphics package
+EAPI=3
+HOMEPAGE=http://piddle.sourceforge.net/
+KEYWORDS=~amd64 ia64 x86
+LICENSE=LGPL-2.1
+RDEPEND==dev-lang/python-2*
+SLOT=0
+SRC_URI=mirror://sourceforge/piddle/piddle-1.0.15.tar.gz
+_eclasses_=distutils	ad9e4720eb3e69090dd968b152fc611b	multilib	97f470f374f2e94ccab04a2fb21d811e	python	efc1c55fc44c5b7272fc2ffba73c3e6f	toolchain-funcs	6eb35f81556258a4bc9182ad3dfd58ee
+_md5_=f5a2f2a387c9f95e5fd3c4e9b2fafb4d

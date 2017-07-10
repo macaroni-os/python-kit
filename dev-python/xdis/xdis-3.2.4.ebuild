@@ -1,8 +1,9 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} pypy)
+PYTHON_COMPAT=( python2_7 python3_{4,5} pypy)
 
 inherit distutils-r1
 
@@ -24,8 +25,6 @@ DEPEND="
 		dev-python/pytest[${PYTHON_USEDEP}]
 	)
 "
-
-PATCHES=( "${FILESDIR}/xdis-test_magic_bytes_error.patch" )
 
 python_prepare_all() {
 	# Fix an unconditional test only dep

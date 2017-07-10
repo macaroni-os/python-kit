@@ -7,6 +7,5 @@
 	</maintainer>
 	<upstream>
 		<remote-id type="pypi">oauth2</remote-id>
-		<remote-id type="github">joestump/python-oauth2</remote-id>
 	</upstream>
 </pkgmetadata>

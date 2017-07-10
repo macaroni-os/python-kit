@@ -1,12 +1,13 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
 PYTHON_COMPAT=( python2_7 python3_{4,5} )
 
 inherit distutils-r1
 
-DESCRIPTION="A goodie-bag of unix shell and environment tools for py.test"
+DESCRIPTION="Virtualenv fixture for py.test"
 HOMEPAGE="https://github.com/manahl/pytest-plugins https://pypi.python.org/pypi/pytest-shutil"
 SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 

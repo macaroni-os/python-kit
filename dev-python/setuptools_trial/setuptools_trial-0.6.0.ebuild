@@ -1,8 +1,9 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} )
+PYTHON_COMPAT=( python2_7 python3_{4,5} )
 
 inherit distutils-r1
 
@@ -13,6 +14,7 @@ SRC_URI="mirror://pypi/${P:0:1}/${PN}/${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
+#IUSE="test"
 IUSE=""
 
 RDEPEND="
@@ -24,3 +26,17 @@ RDEPEND="
 DEPEND="
 	${RDEPEND}
 "
+
+# tests fail due to pip install sandbox violations
+#	test? (
+#		dev-python/virtualenv[${PYTHON_USEDEP}]
+#		dev-python/pytest[${PYTHON_USEDEP}]
+#		dev-python/pytest-virtualenv[${PYTHON_USEDEP}]
+#	)
+#"
+
+#python_test() {
+	#distutils_install_for_testing
+
+	#esetup.py test || die "Tests failed under ${EPYTHON}"
+#}
