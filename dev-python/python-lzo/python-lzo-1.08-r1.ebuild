@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=5
 PYTHON_COMPAT=( python2_7 )
@@ -13,7 +12,7 @@ SRC_URI="http://www.oberhumer.com/opensource/lzo/download/LZO-v1/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE=""
 
 DEPEND="dev-libs/lzo:2"
@@ -24,5 +23,6 @@ python_test() {
 }
 
 src_prepare() {
-	epatch "$(prefixify_ro "${FILESDIR}"/lzo2compat.patch)"
+	epatch "$(PREFIX_LINE_MATCH='/##/!' \
+		prefixify_ro "${FILESDIR}"/lzo2compat.patch)"
 }

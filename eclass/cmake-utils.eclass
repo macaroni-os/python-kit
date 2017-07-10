@@ -1,6 +1,5 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 # @ECLASS: cmake-utils.eclass
 # @MAINTAINER:
@@ -57,7 +56,7 @@ _CMAKE_UTILS_ECLASS=1
 # @ECLASS-VARIABLE: CMAKE_MIN_VERSION
 # @DESCRIPTION:
 # Specify the minimum required CMake version.
-: ${CMAKE_MIN_VERSION:=3.5.2}
+: ${CMAKE_MIN_VERSION:=3.7.2}
 
 # @ECLASS-VARIABLE: CMAKE_REMOVE_MODULES
 # @DESCRIPTION:
@@ -112,7 +111,7 @@ _CMAKE_UTILS_ECLASS=1
 # Should be set by user in a per-package basis in /etc/portage/package.env.
 
 case ${EAPI} in
-	2|3|4|5) : ${CMAKE_WARN_UNUSED_CLI:=no} ;;
+	2|4|5) : ${CMAKE_WARN_UNUSED_CLI:=no} ;;
 	6) : ${CMAKE_WARN_UNUSED_CLI:=yes} ;;
 	*) die "EAPI=${EAPI:-0} is not supported" ;;
 esac
@@ -538,6 +537,7 @@ enable_cmake-utils_src_configure() {
 		SET (CMAKE_Fortran_COMPILER "${myFC/ /;}")
 		SET (CMAKE_AR $(type -P $(tc-getAR)) CACHE FILEPATH "Archive manager" FORCE)
 		SET (CMAKE_RANLIB $(type -P $(tc-getRANLIB)) CACHE FILEPATH "Archive index generator" FORCE)
+		SET (CMAKE_SYSTEM_PROCESSOR "${CHOST%%-*}")
 	_EOF_
 
 	# We are using the C compiler for assembly by default.

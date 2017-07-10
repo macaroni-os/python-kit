@@ -1,6 +1,5 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="5"
 PYTHON_COMPAT=( python2_7 )
@@ -9,7 +8,7 @@ PYTHON_REQ_USE="sqlite"
 inherit twisted-r1
 
 DESCRIPTION="Object database implemented on top of SQLite"
-HOMEPAGE="http://divmod.org/trac/wiki/DivmodAxiom https://pypi.python.org/pypi/Axiom"
+HOMEPAGE="https://github.com/twisted/axiom https://pypi.python.org/pypi/Axiom"
 SRC_URI="mirror://pypi/${TWISTED_PN:0:1}/${TWISTED_PN}/${TWISTED_P}.tar.gz"
 
 LICENSE="MIT"

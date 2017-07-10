@@ -1,6 +1,5 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=5
 PYTHON_COMPAT=( python2_7 pypy )
@@ -13,7 +12,7 @@ SRC_URI="http://wwwsearch.sourceforge.net/${PN}/src/${P}.tar.gz"
 
 LICENSE="|| ( BSD ZPL )"
 SLOT="0"
-KEYWORDS="~alpha amd64 ~arm ~ia64 ppc ~sparc x86 ~amd64-linux ~ia64-linux ~x86-linux ~x64-macos ~x86-macos"
+KEYWORDS="~alpha amd64 ~arm ~ia64 ppc ~sparc x86 ~amd64-linux ~x86-linux ~x64-macos ~x86-macos"
 IUSE="doc"
 
 DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]"

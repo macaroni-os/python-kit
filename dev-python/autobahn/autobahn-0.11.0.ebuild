@@ -1,6 +1,5 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=5
 
@@ -22,7 +21,6 @@ KEYWORDS="~amd64 ~x86 ~amd64-linux ~x86-linux"
 IUSE="test"
 
 RDEPEND="
-	$(python_gen_cond_dep 'virtual/python-asyncio[${PYTHON_USEDEP}]' 'python3*')
 	virtual/python-futures[${PYTHON_USEDEP}]
 	>=dev-python/lz4-0.2.1[${PYTHON_USEDEP}]
 	>=dev-python/msgpack-0.4.0[${PYTHON_USEDEP}]

@@ -1,6 +1,5 @@
 # Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="5"
 PYTHON_COMPAT=( python2_7 )
@@ -15,7 +14,7 @@ SRC_URI="http://www.webpy.org/static/${MY_PN}-${PV}.tar.gz"
 
 LICENSE="public-domain"
 SLOT="0"
-KEYWORDS="amd64 ~hppa x86 ~amd64-linux ~x86-linux"
+KEYWORDS="amd64 hppa x86 ~amd64-linux ~x86-linux"
 IUSE=""
 
 DEPEND=""

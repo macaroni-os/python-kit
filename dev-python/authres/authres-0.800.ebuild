@@ -1,6 +1,5 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=5
 PYTHON_COMPAT=( python{2_7,3_4} pypy )
@@ -18,5 +17,5 @@ IUSE=""
 
 python_test() {
 	"${PYTHON}" -c "import sys, ${PN}, doctest; f, t = doctest.testfile('${PN}/tests'); \
-		sys.exit(bool(f))" || return
+		sys.exit(bool(f))" || die "Tests fail with ${EPYTHON}"
 }

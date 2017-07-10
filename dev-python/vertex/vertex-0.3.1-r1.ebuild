@@ -1,6 +1,5 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI="5"
 PYTHON_COMPAT=( python2_7 )
@@ -19,9 +18,12 @@ RDEPEND="
 	libressl? ( dev-libs/libressl )
 	>=dev-python/epsilon-0.6.0-r1[${PYTHON_USEDEP}]
 	>=dev-python/pyopenssl-0.13-r1[${PYTHON_USEDEP}]
-	dev-python/twisted-core[${PYTHON_USEDEP}]"
+	|| (
+		dev-python/twisted[${PYTHON_USEDEP}]
+		dev-python/twisted-core[${PYTHON_USEDEP}]
+	)"
 DEPEND="${RDEPEND}
-	test? ( dev-python/pretend )"
+	test? ( dev-python/pretend[${PYTHON_USEDEP}] )"
 
 python_install_all() {
 	distutils-r1_python_install_all
