@@ -1,12 +1,10 @@
 dev-python/nautilus-python python_single_target_python2_7
-dev-python/processing python_single_target_python2_7
 dev-python/promise python_single_target_python2_7
 dev-python/pyamazon python_single_target_python2_7
 dev-python/pyclimate python_single_target_python2_7
 dev-python/pydb python_single_target_python2_7
 dev-python/pyifp python_single_target_python2_7
 dev-python/pyndex python_single_target_python2_7
-dev-python/pyrtf python_single_target_python2_7
 dev-python/python-caja python_single_target_python2_7
 dev-python/python-virtkey python_single_target_python2_7
 dev-python/pythong python_single_target_python2_7

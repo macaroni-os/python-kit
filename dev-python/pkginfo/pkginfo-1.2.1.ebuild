@@ -1,10 +1,9 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=5
 
-PYTHON_COMPAT=( python2_7 python3_{4,5} pypy )
+PYTHON_COMPAT=( python2_7 python3_{4,5,6} pypy pypy3 )
 
 inherit distutils-r1
 
@@ -21,9 +20,6 @@ DEPEND="doc? ( dev-python/sphinx[${PYTHON_USEDEP}] )
 RDEPEND="${DEPEND}"
 
 python_prepare_all() {
-	sed -e 's:SPHINXBUILD   = sphinx-build:SPHINXBUILD   = /usr/bin/sphinx-build:' \
-		-i docs/Makefile || die
-
 	# Disable tests that seek to read the version of pkginfo from an installed state
 	# These test will still become installed and testable once installed
 	sed -e 's:test_w_directory_no_EGG_INFO:_&:' \

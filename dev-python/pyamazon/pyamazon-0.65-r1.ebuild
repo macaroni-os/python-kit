@@ -1,6 +1,5 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
 EAPI=6
 
@@ -16,9 +15,11 @@ LICENSE="PSF-2"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
+REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
-DEPEND="app-arch/unzip"
-RDEPEND=""
+RDEPEND="${PYTHON_DEPS}"
+DEPEND="${RDEPEND}
+	app-arch/unzip"
 
 S="${WORKDIR}/${PN}"
 
