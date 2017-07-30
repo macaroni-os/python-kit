@@ -11,17 +11,17 @@ inherit flag-o-matic python-r1 qmake-utils
 DESCRIPTION="Python bindings for the Qwt library"
 HOMEPAGE="http://pyqwt.sourceforge.net/"
 MY_P="PyQwt-${PV}"
-SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.gz mirror://funtoo/sip-4.19-compat.tar.xz"
 
 SLOT="5"
 LICENSE="GPL-2"
-KEYWORDS="amd64 arm ia64 x86"
+KEYWORDS="~amd64 ~arm ~ia64 ~x86"
 IUSE="debug doc examples svg"
 
 RDEPEND="
 	dev-python/numpy[${PYTHON_USEDEP}]
-	<dev-python/PyQt4-4.12[${PYTHON_USEDEP},compat(+)]
-	<dev-python/sip-4.19[${PYTHON_USEDEP}]
+	>=dev-python/PyQt4-4.12[${PYTHON_USEDEP},compat(+)]
+	>=dev-python/sip-4.19[${PYTHON_USEDEP}]
 	x11-libs/qwt:5[svg?]"
 DEPEND="${RDEPEND}
 	doc? ( dev-python/sphinx[${PYTHON_USEDEP}] )"
@@ -30,15 +30,20 @@ S=${WORKDIR}/${MY_P}/configure
 
 src_prepare() {
 	sed -i -e "s|configuration.qt_dir, 'bin'|'$(qt4_get_bindir)'|" configure.py || die
+	cd "${S}"
+	cd ..
+	EPATCH_SOURCE="../sip-4.19-compat" EPATCH_SUFFIX="patch" \
+		EPATCH_FORCE="yes" epatch
 	python_copy_sources
 	append-flags -fPIC
 }
 
 src_configure() {
+	echo "buildir: ${BUILD_DIR}"
 	configuration() {
 		local myconf=()
 		use debug && myconf+=( --debug )
-
+		echo "buildir: ${BUILD_DIR}"
 		cd "${BUILD_DIR}" || die
 		# '-j' option can be buggy.
 		"${PYTHON}" configure.py \
