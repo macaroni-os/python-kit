@@ -68,6 +68,7 @@ dev-python/clize:datetime - Add support for datetime arguments parsing
 dev-python/cvxopt:dsdp - Use interior point library sci-libs/dsdp
 dev-python/cvxopt:glpk - Use GNU Linear Programming Kit sci-mathematics/glpk
 dev-python/dap:server - Enable OpenDAP server support
+dev-python/dask:distributed - Add support for distributed computing with dev-python/distributed
 dev-python/django-cms:admin-style - Install plugin customizing admin panel styles
 dev-python/django-cms:ckeditor - Install text-ckeditor plugin for rich text editing
 dev-python/django-cms:file - Install djangocms file plugin
@@ -85,6 +86,8 @@ dev-python/django-tastypie:yaml - An optional serialiser dev-python/yaml
 dev-python/django-two-factor-auth:yubikey - Adds support for Yubikeys via django-otp-yubikey
 dev-python/editorconfig-core-py:cli - Install command line interface as well as python library
 dev-python/falcon:cython - Build cython-based python modules
+dev-python/fastparquet:brotli - Enable support for brotli compression
+dev-python/fastparquet:snappy - Enable support for snappy compression
 dev-python/flask-restful:paging - Enable resource paging support
 dev-python/geopy:timezone - Enables localized date support
 dev-python/geopy:yahoo - Enables use of YahooPlaceFinder
