@@ -1,6 +1,7 @@
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI="5"
 
 PYTHON_COMPAT=( python2_7 )
 
@@ -8,14 +9,13 @@ inherit distutils-r1
 
 DESCRIPTION="SIP SIMPLE client SDK is a Software Development Kit"
 HOMEPAGE="http://sipsimpleclient.org"
-SRC_URI="https://github.com/AGProjects/${PN}/archive/release-${PV}.tar.gz -> ${P}.tar.gz"
-RESTRICT="mirror"
+SRC_URI="http://download.ag-projects.com/SipClient/${P}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
 IUSE="libressl"
 
-KEYWORDS="~*"
+KEYWORDS="~amd64 ~x86"
 
 CDEPEND="
 	dev-db/sqlite:3
@@ -45,14 +45,3 @@ DEPEND="${CDEPEND}
 	dev-python/cython[${PYTHON_USEDEP}]
 	virtual/pkgconfig
 "
-
-PATCHES=( "${FILESDIR}/${PN}-2.x-PixelFormat-fix.patch" )
-
-S="${WORKDIR}/${PN}-release-${PV}"
-
-src_prepare() {
-	# Fix missing execution permission
-	chmod u+x deps/pjsip/configure
-	chmod u+x deps/pjsip/aconfigure
-	default
-}
