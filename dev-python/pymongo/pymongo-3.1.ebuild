@@ -1,9 +1,10 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=5
 
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} pypy )
+PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} pypy )
 
 inherit check-reqs distutils-r1
 
@@ -22,7 +23,7 @@ RDEPEND="
 DEPEND="
 	${RDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]
-	doc? ( dev-python/sphinx[$(python_gen_usedep 'python2*')] )
+	doc? ( dev-python/sphinx[${PYTHON_USEDEP}] )
 	test? (
 		dev-python/nose[${PYTHON_USEDEP}]
 		>=dev-db/mongodb-2.6.0
@@ -47,19 +48,10 @@ pkg_setup() {
 	reqcheck pkg_setup
 }
 
-python_compile_docs() {
+python_compile_all() {
 	if use doc; then
-		python_setup 'python2*'
 		mkdir html || die
 		sphinx-build doc html || die
-	fi
-}
-
-python_install_docs() {
-	if use doc; then
-		python_setup 'python2*'
-		local HTML_DOCS=( html/. )
-		einstalldocs
 	fi
 }
 
@@ -122,12 +114,8 @@ python_test() {
 	rm -rf "${dbpath}" || die
 }
 
-src_compile() {
-	distutils-r1_src_compile
-	python_compile_docs
-}
+python_install_all() {
+	use doc && local HTML_DOCS=( html/. )
 
-src_install() {
-	distutils-r1_src_install
-	python_install_docs
+	distutils-r1_python_install_all
 }
