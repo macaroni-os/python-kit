@@ -46,8 +46,6 @@ DEPEND="${CDEPEND}
 	virtual/pkgconfig
 "
 
-PATCHES=( "${FILESDIR}/${PN}-2.x-PixelFormat-fix.patch" )
-
 S="${WORKDIR}/${PN}-release-${PV}"
 
 src_prepare() {
