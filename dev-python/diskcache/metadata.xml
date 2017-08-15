@@ -6,6 +6,7 @@
     <name>Python</name>
   </maintainer>
   <upstream>
-    <remote-id type="pypi">south</remote-id>
+    <remote-id type="pypi">diskcache</remote-id>
+    <remote-id type="github">grantjenks/python-diskcache</remote-id>
   </upstream>
 </pkgmetadata>
