@@ -18,7 +18,8 @@ IUSE=""
 
 RDEPEND="
 	dev-python/pyparsing[${PYTHON_USEDEP}]
-	media-gfx/graphviz"
+	media-gfx/graphviz
+	!media-gfx/pydot"
 DEPEND="${RDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]"
 
