@@ -1,8 +1,9 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=6
-PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6} )
+PYTHON_COMPAT=( python{2_7,3_3,3_4,3_5} )
 
 inherit distutils-r1
 
@@ -14,12 +15,17 @@ SRC_URI="https://github.com/MongoEngine/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.
 
 LICENSE="BSD"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE="test"
 
-RDEPEND=""
-DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]
-	dev-python/pymongo[${PYTHON_USEDEP}]"
+RDEPEND="dev-python/pillow
+>=dev-python/python-dateutil-2.4.0
+dev-python/blinker"
+
+DEPEND="${RDEPEND}
+	dev-python/setuptools[${PYTHON_USEDEP}]
+	dev-python/pymongo[${PYTHON_USEDEP}]
+	"
 
 python_prepare_all() {
 	sed -i -e 's/tests/tests*/g' setup.py || die "Failed to fix test removal thingy"
