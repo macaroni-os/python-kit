@@ -1,28 +1,29 @@
-# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=6
 
-PYTHON_COMPAT=( python2_7 )
+PYTHON_COMPAT=( python2_7 python3_{4,5,6} )
 
 inherit distutils-r1
 
 DESCRIPTION="DNS toolkit for Python"
 HOMEPAGE="http://www.dnspython.org/ https://pypi.python.org/pypi/dnspython"
-SRC_URI="http://www.dnspython.org/kits/${PV}/${P}.tar.gz"
+SRC_URI="https://github.com/danielrobbins/dnspython/archive/v1.15.0-cryptodome.zip"
 
 LICENSE="ISC"
-SLOT="py2"
-KEYWORDS="alpha amd64 arm ~arm64 hppa ia64 ppc ppc64 ~s390 ~sh sparc x86 ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-solaris"
+SLOT="0"
+KEYWORDS="*"
 IUSE="examples test"
 
-RDEPEND="dev-python/pycrypto[${PYTHON_USEDEP}]
-	!dev-python/dnspython:0"
-DEPEND="${RDEPEND}
+RDEPEND="dev-python/pycryptodome[${PYTHON_USEDEP}]
+	!dev-python/dnspython:py2
+	!dev-python/dnspython:py3"
+DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]
 	app-arch/unzip"
 
 # For testsuite
 DISTUTILS_IN_SOURCE_BUILD=1
+S="$WORKDIR/$P-cryptodome"
 
 python_test() {
 	cd tests || die
@@ -31,6 +32,9 @@ python_test() {
 }
 
 python_install_all() {
-	use examples && local EXAMPLES=( examples/. )
 	distutils-r1_python_install_all
+	if use examples; then
+		dodoc -r examples
+		docompress -x /usr/share/doc/${PF}/examples
+	fi
 }
