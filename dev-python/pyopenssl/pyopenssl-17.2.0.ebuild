@@ -21,7 +21,7 @@ SRC_URI="mirror://pypi/${MY_PN:0:1}/${MY_PN}/${MY_P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~x86"
+KEYWORDS="amd64 arm arm64 hppa ia64 mips ppc ppc64 x86"
 IUSE="doc examples test"
 
 RDEPEND="
@@ -51,8 +51,7 @@ python_compile_all() {
 }
 
 python_test() {
-	# FIXME: for some reason, no-ops on PyPy
-	py.test -v || die "Testing failed with ${EPYTHON}"
+	TZ=UTC py.test -v || die "Testing failed with ${EPYTHON}" # Fixes bug #627530
 }
 
 python_install_all() {

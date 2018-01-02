@@ -15,7 +15,7 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64 ~x86 ~amd64-linux ~x86-linux"
-IUSE="doc examples matplotlib notebook nbconvert qt4 qt5 +smp test wxwidgets"
+IUSE="doc examples matplotlib notebook nbconvert qt5 +smp test wxwidgets"
 
 CDEPEND="
 	dev-python/decorator[${PYTHON_USEDEP}]
@@ -32,10 +32,6 @@ CDEPEND="
 
 RDEPEND="${CDEPEND}
 	virtual/python-pathlib[${PYTHON_USEDEP}]
-	notebook? (
-		dev-python/notebook[${PYTHON_USEDEP}]
-		dev-python/ipywidgets[${PYTHON_USEDEP}]
-	)
 	nbconvert? ( dev-python/nbconvert[${PYTHON_USEDEP}] )"
 DEPEND="${CDEPEND}
 	dev-python/setuptools[${PYTHON_USEDEP}]
@@ -57,7 +53,10 @@ DEPEND="${CDEPEND}
 	)"
 
 PDEPEND="
-	qt4? ( dev-python/qtconsole[${PYTHON_USEDEP}] )
+	notebook? (
+		dev-python/notebook[${PYTHON_USEDEP}]
+		dev-python/ipywidgets[${PYTHON_USEDEP}]
+	)
 	qt5? ( dev-python/qtconsole[${PYTHON_USEDEP}] )
 	smp? ( dev-python/ipyparallel[${PYTHON_USEDEP}] )"
 
