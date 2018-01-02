@@ -8,7 +8,7 @@ PYTHON_COMPAT=( python2_7 )
 inherit distutils-r1
 
 DESCRIPTION="An asynchronous API to PostgreSQL for twisted"
-HOMEPAGE="https://github.com/jamwt/pgasync"
+HOMEPAGE="http://www.jamwt.com/pgasync/"
 SRC_URI="http://www.jamwt.com/pgasync/files/${P}.tar.gz"
 
 LICENSE="BSD"

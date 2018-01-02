@@ -16,10 +16,7 @@ SLOT="0"
 KEYWORDS="amd64 ~arm64 x86"
 IUSE="test"
 
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
-	test? ( dev-python/unittest2[${PYTHON_USEDEP}] )
-"
+DEPEND="test? ( dev-python/unittest2[${PYTHON_USEDEP}] )"
 
 python_test() {
 	"${PYTHON}" test_contextlib2.py || die "Tests fail for ${EPYTHON}"

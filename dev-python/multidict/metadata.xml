@@ -2,9 +2,11 @@
 <!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
-		<email>zmedico@gentoo.org</email>
-		<name>Zac Medico</name>
+		<email>alunduil@gentoo.org</email>
+		<name>Alex Brandt</name>
 	</maintainer>
+	<longdescription lang="en">
+	</longdescription>
 	<upstream>
 		<remote-id type="github">aio-libs/multidict</remote-id>
 	</upstream>

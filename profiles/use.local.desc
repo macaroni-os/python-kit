@@ -52,8 +52,6 @@ dev-python/PyQt5:xmlpatterns - Build bindings for the QtXmlPatterns module
 dev-python/PythonQt:extensions - Install extensions
 dev-python/QtPy:designer - Build bindings for the QtDesigner module and enable the designer plugin
 dev-python/QtPy:gui - Build bindings for the QtGui module
-dev-python/QtPy:pyqt5 - Enable the dev-python/PyQt5 backend
-dev-python/QtPy:pyside - Enable the dev-python/pyside backend
 dev-python/QtPy:svg - Build bindings for the QtSvg module
 dev-python/QtPy:testlib - Build bindings for the QtTest module
 dev-python/QtPy:webkit - Build bindings for the QtWebKit module
@@ -129,6 +127,7 @@ dev-python/passlib:totp - time based one time password support
 dev-python/paste:flup - enable support for flup (and therefore for various wgsi servers and middleware)
 dev-python/paste:openid - enable OpenID support
 dev-python/pillow:imagequant - Build with Image Quantization Library support
+dev-python/pillow:ole - Add support for OLE2 image format
 dev-python/py-amqp:extras - Install extra tools to generate initial Python mod from an AMQP XML file
 dev-python/pygame:midi - Enable midi support using media-libs/portmidi
 dev-python/pygpu:cuda - Enable NVIDIA CUDA toolkit support
@@ -142,10 +141,14 @@ dev-python/pypax:ptpax - Enable PT_PAX_FLAGS support.
 dev-python/pypax:xtpax - Enable XATTR_PAX_FLAGS support.
 dev-python/pyplusplus:indexing - Install indexing_suite_v2 to enhance boost python
 dev-python/pyplusplus:numpy - Generate code for dev-libs/boost-numpy to accelerate arrays
-dev-python/pypy:low-memory - Build using PyPy with the engine configured towards low memory footprint. This makes it possible to build PyPy using ~3.5G of RAM on amd64 and ~half of that on x86, at the cost of lengthened build time.
+dev-python/pypy:low-memory - Build using PyPy with the engine configured towards low memory footprint. \ This makes it possible to build PyPy using ~3.5G of RAM on amd64 and ~half of that on x86, at the cost of lengthened build time. Please note that you will need an extra ~1G of extra RAM or \ swap since the translation memory (unused at the time) is not freed when the C compiler is spawned.
 dev-python/pypy:sandbox - Enable sandboxing functionality
-dev-python/pypy3:low-memory - Build using PyPy with the engine configured towards low memory footprint. This makes it possible to build PyPy using ~3.5G of RAM on amd64 and ~half of that on x86, at the cost of lengthened build time.
+dev-python/pypy:shadowstack - Use a shadow stack for finding GC roots
+dev-python/pypy-bin:shadowstack - Use a shadow stack for finding GC roots
+dev-python/pypy3:low-memory - Build using PyPy with the engine configured towards low memory footprint. This makes it possible to build PyPy using ~3.5G of RAM on amd64 and ~half of that on x86, at the cost of lengthened build time. Please note that you will need an extra ~1G of extra RAM or swap since the translation memory (unused at the time) is not freed when the C compiler is spawned.
 dev-python/pypy3:sandbox - Enable sandboxing functionality
+dev-python/pypy3:shadowstack - Use a shadow stack for finding GC roots
+dev-python/pypy3-bin:shadowstack - Use a shadow stack for finding GC roots
 dev-python/pyside:X - Build QtGui and QtTest modules
 dev-python/pyside:declarative - Build QtDeclarative module
 dev-python/pyside:designer - Build QtDesigner and QtUiTools modules
@@ -202,5 +205,4 @@ dev-python/ws4py:server - Install server modules
 dev-python/wxpython:doc - Install HTML wxWidgets docs and wxpython API reference.
 dev-python/wxpython:examples - Install interactive demo module browser and sample applets.
 dev-python/zeep:async - Add async support
-dev-python/zeep:tornado - Add tornado support
 dev-python/zsi:twisted - add support for python-twisted (needs dev-python/twisted-core and dev-python/twisted-web)

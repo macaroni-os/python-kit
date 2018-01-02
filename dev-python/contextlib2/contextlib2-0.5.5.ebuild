@@ -3,7 +3,7 @@
 
 EAPI=6
 
-PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6} pypy{,3} )
+PYTHON_COMPAT=( python{2_7,3_4,3_5,3_6} pypy )
 
 inherit distutils-r1
 
@@ -13,13 +13,10 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="PSF-2.4"
 SLOT="0"
-KEYWORDS="amd64 ~arm64 hppa ia64 ~mips ppc ppc64 sparc ~x86"
+KEYWORDS="~amd64 ~arm64 ~x86"
 IUSE="test"
 
-DEPEND="
-	dev-python/setuptools[${PYTHON_USEDEP}]
-	test? ( dev-python/unittest2[${PYTHON_USEDEP}] )
-"
+DEPEND="test? ( dev-python/unittest2[${PYTHON_USEDEP}] )"
 
 python_test() {
 	"${PYTHON}" test_contextlib2.py || die "Tests fail for ${EPYTHON}"

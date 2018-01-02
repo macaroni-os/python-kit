@@ -16,8 +16,6 @@ SLOT="0"
 KEYWORDS="amd64 ~arm64 ~ppc x86"
 IUSE=""
 
-DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]"
-
 python_test() {
 	python -m unittest discover
 }

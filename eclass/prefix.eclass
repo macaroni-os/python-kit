@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2009 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: prefix.eclass
@@ -48,7 +48,7 @@ eprefixify() {
 }
 
 # @FUNCTION: hprefixify
-# @USAGE: [ -w <line match> ] [ -e <extended regex> ] [ -q <quotation char> ] <list of files>
+# @USAGE: [ -w <line match> ] [-e <extended regex> ] <list of files>
 # @DESCRIPTION:
 # Tries a set of heuristics to prefixify the given files. Dies if no
 # arguments are given, a file does not exist, or changing a file failed.
@@ -56,10 +56,7 @@ eprefixify() {
 # Additional extended regular expression can be passed by -e or
 # environment variable PREFIX_EXTRA_REGEX.  The default heuristics can
 # be constrained to lines that match a sed expression passed by -w or
-# environment variable PREFIX_LINE_MATCH.  Quotation characters can be
-# specified by -q or environment variable PREFIX_QUOTE_CHAR, unless
-# EPREFIX is empty.
-#
+# environment variable PREFIX_LINE_MATCH.
 # @EXAMPLE:
 # Only prefixify the 30th line,
 #   hprefixify -w 30 configure
@@ -67,21 +64,18 @@ eprefixify() {
 #   hprefixify -w "/PATH/" configure
 # Also delete all the /opt/gnu search paths,
 #   hprefixify -e "/\/opt\/gnu/d" configure
-# Quote the inserted EPREFIX
-#   hprefixify -q '"' etc/profile
 hprefixify() {
 	use prefix || return 0
 
-	local xl=() x
+	local PREFIX_EXTRA_REGEX PREFIX_LINE_MATCH xl=() x
 	while [[ $# -gt 0 ]]; do
 		case $1 in
-			-e) local PREFIX_EXTRA_REGEX="$2"
+			-e)
+				PREFIX_EXTRA_REGEX="$2"
 				shift
 				;;
-			-w) local PREFIX_LINE_MATCH="$2"
-				shift
-				;;
-			-q) local PREFIX_QUOTE_CHAR="${EPREFIX:+$2}"
+			-w)
+				PREFIX_LINE_MATCH="$2"
 				shift
 				;;
 			*)
@@ -90,8 +84,6 @@ hprefixify() {
 		esac
 		shift
 	done
-	local dirs="/(usr|lib(|[onx]?32|n?64)|etc|bin|sbin|var|opt|run)" \
-		  eprefix="${PREFIX_QUOTE_CHAR}${EPREFIX}${PREFIX_QUOTE_CHAR}"
 
 	[[ ${#xl[@]} -lt 1 ]] && die "at least one file operand is required"
 	einfo "Adjusting to prefix ${EPREFIX:-/}"
@@ -99,8 +91,7 @@ hprefixify() {
 		if [[ -e ${x} ]] ; then
 			ebegin "  ${x##*/}"
 			sed -r \
-				-e "${PREFIX_LINE_MATCH}s,([^[:alnum:]}\)\.])${dirs},\1${eprefix}/\2,g" \
-				-e "${PREFIX_LINE_MATCH}s,^${dirs},${eprefix}/\1," \
+				-e "${PREFIX_LINE_MATCH}s,([^[:alnum:]}\)\.])/(usr|lib(|[onx]?32|n?64)|etc|bin|sbin|var|opt|run),\1${EPREFIX}/\2,g" \
 				-e "${PREFIX_EXTRA_REGEX}" \
 				-i "${x}"
 			eend $? || die "failed to prefixify ${x}"

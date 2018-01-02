@@ -15,10 +15,10 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64 ~x86"
-IUSE="doc examples matplotlib mongodb notebook nbconvert qt5 +smp test wxwidgets"
+IUSE="doc examples matplotlib mongodb notebook nbconvert qt4 +smp test wxwidgets"
 
 REQUIRED_USE="
-	test? ( doc matplotlib mongodb notebook nbconvert qt5 wxwidgets )
+	test? ( doc matplotlib mongodb notebook nbconvert qt4 wxwidgets )
 	doc? ( mongodb )"
 
 CDEPEND="
@@ -36,6 +36,10 @@ CDEPEND="
 
 RDEPEND="${CDEPEND}
 	virtual/python-pathlib[${PYTHON_USEDEP}]
+	notebook? (
+		dev-python/notebook[${PYTHON_USEDEP}]
+		dev-python/ipywidgets[${PYTHON_USEDEP}]
+	)
 	nbconvert? ( dev-python/nbconvert[${PYTHON_USEDEP}] )"
 DEPEND="${CDEPEND}
 	>=dev-python/setuptools-18.5[${PYTHON_USEDEP}]
@@ -68,11 +72,7 @@ DEPEND="${CDEPEND}
 	)"
 
 PDEPEND="
-	notebook? (
-		dev-python/notebook[${PYTHON_USEDEP}]
-		dev-python/ipywidgets[${PYTHON_USEDEP}]
-	)
-	qt5? ( dev-python/qtconsole )
+	qt4? ( dev-python/qtconsole )
 	smp? ( dev-python/ipyparallel[${PYTHON_USEDEP}] )"
 
 PATCHES=( "${FILESDIR}"/2.1.0-substitute-files.patch )

@@ -18,8 +18,6 @@ IUSE=""
 DEPEND=">=net-libs/libasyncns-0.4"
 RDEPEND="${DEPEND}"
 
-PATCHES=( "${FILESDIR}/${PN}-0.7.1-glibc-2.25.patch" )
-
 python_compile() {
 	if [[ ${EPYTHON} != python3* ]]; then
 		local -x CFLAGS="${CFLAGS} -fno-strict-aliasing"

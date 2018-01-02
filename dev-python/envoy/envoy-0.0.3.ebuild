@@ -18,10 +18,7 @@ IUSE=""
 DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]"
 RDEPEND=""
 
-RESTRICT="test"
-
 python_test() {
-	# These unit tests fail, see the following issue:
-	# https://github.com/kennethreitz/envoy/issues/58
-	"${PYTHON}" test_envoy.py || die
+	# and it fails almost all;https://github.com/kennethreitz/envoy/issues/58
+	"${PYTHON}" test_envoy.py
 }

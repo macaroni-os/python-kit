@@ -11,7 +11,7 @@ if [[ ${PV} == *9999 ]] ; then
 	inherit git-r3
 else
 	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
-	SRC_URI="https://github.com/pkgcore/snakeoil/releases/download/v${PV}/${P}.tar.gz"
+	SRC_URI="https://github.com/pkgcore/${PN}/releases/download/v${PV}/${P}.tar.gz"
 fi
 
 DESCRIPTION="misc common functionality and useful optimizations"
@@ -22,8 +22,8 @@ SLOT="0"
 IUSE="test"
 
 DEPEND="dev-python/setuptools[${PYTHON_USEDEP}]
+	$(python_gen_cond_dep 'dev-python/cython[${PYTHON_USEDEP}]' 'python3*')
 	test? ( dev-python/mock[${PYTHON_USEDEP}] )"
-[[ ${PV} == 9999 ]] && DEPEND+=" $(python_gen_cond_dep 'dev-python/cython[${PYTHON_USEDEP}]' 'python3*')"
 
 python_configure_all() {
 	# disable snakeoil 2to3 caching

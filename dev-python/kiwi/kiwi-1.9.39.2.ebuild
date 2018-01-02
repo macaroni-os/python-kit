@@ -7,7 +7,8 @@ PYTHON_COMPAT=( python2_7 )
 inherit distutils-r1 versionator virtualx
 
 DESCRIPTION="Kiwi is a pure Python framework and set of enhanced PyGTK widgets"
-HOMEPAGE="https://launchpad.net/kiwi
+HOMEPAGE="http://www.async.com.br/projects/kiwi/
+	https://launchpad.net/kiwi
 	https://pypi.python.org/pypi/kiwi-gtk"
 MY_PN="${PN}-gtk"
 MY_P="${MY_PN}-${PV}"

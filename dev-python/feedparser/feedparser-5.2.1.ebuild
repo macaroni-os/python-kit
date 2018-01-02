@@ -3,9 +3,9 @@
 
 EAPI=5
 
-PYTHON_COMPAT=( python2_7 python3_{4,5,6} pypy{,3} )
+PYTHON_COMPAT=( python2_7 python3_{4,5,6} pypy )
 
-inherit distutils-r1
+inherit distutils-r1 eutils
 
 DESCRIPTION="Parse RSS and Atom feeds in Python"
 HOMEPAGE="https://github.com/kurtmckee/feedparser https://pypi.python.org/pypi/feedparser"

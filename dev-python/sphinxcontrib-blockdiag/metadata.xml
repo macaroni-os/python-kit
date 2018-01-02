@@ -11,4 +11,5 @@
 		</maintainer>
 		<remote-id type="github">blockdiag/sphinxcontrib-blockdiag</remote-id>
 	</upstream>
+	<longdescription/>
 </pkgmetadata>

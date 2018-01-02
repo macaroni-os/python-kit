@@ -151,7 +151,5 @@ xfconf_pkg_postrm() {
 	debug-print-function ${FUNCNAME} "$@"
 	fdo-mime_desktop_database_update
 	fdo-mime_mime_database_update
-	if [[ -n ${GNOME2_ECLASS_ICONS} ]]; then
-		gnome2_icon_cache_update
-	fi
+	gnome2_icon_cache_update
 }

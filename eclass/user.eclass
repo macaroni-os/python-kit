@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 # @ECLASS: user.eclass
@@ -103,10 +103,6 @@ egetent() {
 # Default uid is (pass -1 for this) next available, default shell is
 # /bin/false, default homedir is /dev/null, and there are no default groups.
 enewuser() {
-	if [[ ${EUID} != 0 ]] ; then
-		einfo "Insufficient privileges to execute ${FUNCNAME[0]}"
-		return 0
-	fi
 	_assert_pkg_ebuild_phase ${FUNCNAME}
 
 	# get the username
@@ -266,10 +262,6 @@ enewuser() {
 # do the rest.  You may specify the gid for the group or allow the group to
 # allocate the next available one.
 enewgroup() {
-	if [[ ${EUID} != 0 ]] ; then
-		einfo "Insufficient privileges to execute ${FUNCNAME[0]}"
-		return 0
-	fi
 	_assert_pkg_ebuild_phase ${FUNCNAME}
 
 	# get the group

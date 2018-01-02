@@ -1,9 +1,5 @@
-=dev-python/PythonQt-3.1 python_single_target_python2_7
-=dev-python/PythonQt-9999 python_single_target_python2_7
-=dev-python/thunarx-python-0.3.0-r1 python_single_target_python2_7
-=dev-python/thunarx-python-0.3.0-r2 python_single_target_python2_7
-=dev-python/thunarx-python-0.4.0 python_single_target_python2_7
 =dev-python/uranium-2.3.1 python_single_target_python3_4 python_targets_python3_4
+dev-python/PythonQt python_single_target_python2_7
 dev-python/nautilus-python python_single_target_python2_7
 dev-python/promise python_single_target_python2_7
 dev-python/pyamazon python_single_target_python2_7
@@ -20,4 +16,5 @@ dev-python/root_numpy python_single_target_python2_7
 dev-python/rootpy python_single_target_python2_7
 dev-python/simplecv python_single_target_python2_7
 dev-python/storm python_single_target_python2_7
+dev-python/thunarx-python python_single_target_python2_7
 dev-python/visual python_single_target_python2_7

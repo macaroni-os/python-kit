@@ -23,7 +23,6 @@ DEPEND="
 	test? (
 		dev-python/PyContracts[${PYTHON_USEDEP}]
 		dev-python/mock[${PYTHON_USEDEP}]
-		dev-python/nose[${PYTHON_USEDEP}]
 	)
 "
 

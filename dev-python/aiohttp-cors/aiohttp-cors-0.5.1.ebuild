@@ -14,7 +14,7 @@ EGIT_REPO_URI="https://github.com/aio-libs/aiohttp-cors"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~amd64"
 IUSE="test"
 
 RDEPEND=">=dev-python/aiohttp-1.1.1[${PYTHON_USEDEP}]
