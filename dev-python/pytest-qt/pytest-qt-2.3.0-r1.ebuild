@@ -12,15 +12,12 @@ SRC_URI="mirror://pypi/${PN:0:1}/${PN}/${P}.tar.gz"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="~amd64 ~x86"
 IUSE="doc"
 
 RDEPEND="
 	>=dev-python/pytest-2.7.0[${PYTHON_USEDEP}]
-	|| (
-		dev-python/PyQt4
-		dev-python/PyQt5
-	)
+	dev-python/PyQt5[gui]
 	doc? (
 		dev-python/sphinx[${PYTHON_USEDEP}]
 		dev-python/sphinx-py3doc-enhanced-theme[${PYTHON_USEDEP}]
