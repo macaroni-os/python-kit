@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
-PYTHON_COMPAT=( python2_7 python3_4 python3_5 )
+PYTHON_COMPAT=( python2_7 python3_4 python3_5 python3_6 )
 
 inherit distutils-r1
 
@@ -15,19 +15,17 @@ SLOT="0"
 KEYWORDS="amd64 ~arm64 x86"
 IUSE=""
 
-PATCHES=( "${FILESDIR}/xxe-4.0.2.patch" )
+PATCHES=(
+
+)
 
 DEPEND="
 	dev-python/setuptools[${PYTHON_USEDEP}]
 "
 RDEPEND="
-	dev-python/decorator[${PYTHON_USEDEP}]
 	>=dev-python/requests-1.0.0[${PYTHON_USEDEP}]
 	dev-python/future[${PYTHON_USEDEP}]
-	dev-python/paste[${PYTHON_USEDEP}]
-	dev-python/zope-interface[${PYTHON_USEDEP}]
-	dev-python/repoze-who[${PYTHON_USEDEP}]
-	>=dev-python/pycrypto-2.5[${PYTHON_USEDEP}]
+	dev-python/cryptography[${PYTHON_USEDEP}]
 	dev-python/pytz[${PYTHON_USEDEP}]
 	dev-python/pyopenssl[${PYTHON_USEDEP}]
 	dev-python/python-dateutil[${PYTHON_USEDEP}]
