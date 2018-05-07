@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -12,14 +12,13 @@ SRC_URI="https://github.com/docker/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="Apache-2.0"
 SLOT="0"
-KEYWORDS="amd64 x86"
+KEYWORDS="amd64 ~x86"
 IUSE="doc test"
 
 RDEPEND="
 	>=dev-python/docker-pycreds-0.2.1[${PYTHON_USEDEP}]
 	!~dev-python/requests-2.18.0[${PYTHON_USEDEP}]
-	!~dev-python/requests-2.12.2[${PYTHON_USEDEP}]
-	>=dev-python/requests-2.11.1[${PYTHON_USEDEP}]
+	>=dev-python/requests-2.14.2[${PYTHON_USEDEP}]
 	>=dev-python/six-1.4.0[${PYTHON_USEDEP}]
 	>=dev-python/websocket-client-0.32.0[${PYTHON_USEDEP}]
 	$(python_gen_cond_dep '>=dev-python/backports-ssl-match-hostname-3.5[${PYTHON_USEDEP}]' 'python2_7' 'python3_4' )
