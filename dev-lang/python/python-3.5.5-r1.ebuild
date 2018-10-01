@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5"
@@ -7,17 +7,18 @@ WANT_LIBTOOL="none"
 inherit autotools eutils flag-o-matic multilib pax-utils python-utils-r1 toolchain-funcs
 
 MY_P="Python-${PV/_/}"
-PATCHSET_VERSION="3.5.3-0"
+PATCHSET_VERSION="3.5.4-0"
 
 DESCRIPTION="An interpreted, interactive, object-oriented programming language"
-HOMEPAGE="http://www.python.org/"
-SRC_URI="http://www.python.org/ftp/python/${PV%_rc*}/${MY_P}.tar.xz
+HOMEPAGE="https://www.python.org/"
+SRC_URI="https://www.python.org/ftp/python/${PV%_rc*}/${MY_P}.tar.xz
 	https://dev.gentoo.org/~floppym/python/python-gentoo-patches-${PATCHSET_VERSION}.tar.xz"
 
 LICENSE="PSF-2"
 SLOT="3.5/3.5m"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
-IUSE="build elibc_uclibc examples gdbm hardened ipv6 libressl +ncurses +readline sqlite +ssl +threads tk wininst +xml"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
+IUSE="bluetooth build elibc_uclibc examples gdbm hardened ipv6 libressl +ncurses +readline sqlite +ssl test +threads tk wininst +xml"
+RESTRICT="!test? ( test )"
 
 # Do not add a dependency on dev-lang/python to this ebuild.
 # If you need to apply a patch which requires python for bootstrapping, please
@@ -30,14 +31,12 @@ RDEPEND="app-arch/bzip2:0=
 	virtual/libffi
 	virtual/libintl
 	gdbm? ( sys-libs/gdbm:0=[berkdb] )
-	ncurses? (
-		>=sys-libs/ncurses-5.2:0=
-		readline? ( >=sys-libs/readline-4.1:0= )
-	)
+	ncurses? ( >=sys-libs/ncurses-5.2:0= )
+	readline? ( >=sys-libs/readline-4.1:0= )
 	sqlite? ( >=dev-db/sqlite-3.3.8:3= )
 	ssl? (
 		!libressl? ( dev-libs/openssl:0= )
-		libressl? ( dev-libs/libressl:= )
+		libressl? ( dev-libs/libressl:0= )
 	)
 	tk? (
 		>=dev-lang/tcl-8.0:0=
@@ -47,11 +46,13 @@ RDEPEND="app-arch/bzip2:0=
 	)
 	xml? ( >=dev-libs/expat-2.1:0= )
 	!!<sys-apps/sandbox-2.6-r1"
+# bluetooth requires headers from bluez
 DEPEND="${RDEPEND}
+	bluetooth? ( net-wireless/bluez )
 	virtual/pkgconfig
 	!sys-devel/gcc[libffi(-)]"
 RDEPEND+=" !build? ( app-misc/mime-types )"
-PDEPEND=">=app-eselect/eselect-python-20140125-r1 dev-python/setuptools[python_targets_python3_5]"
+PDEPEND=">=app-eselect/eselect-python-20140125-r1"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -71,8 +72,9 @@ src_prepare() {
 	EPATCH_SUFFIX="patch" epatch "${WORKDIR}/patches"
 	epatch "${FILESDIR}/${PN}-3.4.3-ncurses-pkg-config.patch"
 	epatch "${FILESDIR}/${PN}-3.5-distutils-OO-build.patch"
-	epatch "${FILESDIR}/${P}-disable-nis.patch"
-
+	epatch "${FILESDIR}/3.6-disable-nis.patch"
+	epatch "${FILESDIR}/python-3.5.5-libressl-compatibility.patch"
+	epatch "${FILESDIR}/python-3.5.5-hash-unaligned.patch"
 
 	epatch_user
 
@@ -93,6 +95,8 @@ src_prepare() {
 
 src_configure() {
 	local disable
+	# disable automagic bluetooth headers detection
+	use bluetooth || export ac_cv_header_bluetooth_bluetooth_h=no
 	use gdbm     || disable+=" gdbm"
 	use ncurses  || disable+=" _curses _curses_panel"
 	use readline || disable+=" readline"
@@ -292,7 +296,7 @@ src_install() {
 	# if not using a cross-compiler, use the fresh binary
 	if ! tc-is-cross-compiler; then
 		local -x PYTHON=./python
-		local -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH+${LD_LIBRARY_PATH}:}.
+		local -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH+${LD_LIBRARY_PATH}:}${PWD}
 	else
 		vars=( PYTHON "${vars[@]}" )
 	fi
