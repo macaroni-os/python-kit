@@ -1,23 +1,24 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="5"
+EAPI="7"
 WANT_LIBTOOL="none"
 
-inherit autotools eutils flag-o-matic multilib pax-utils python-utils-r1 toolchain-funcs multiprocessing
+inherit autotools flag-o-matic pax-utils python-utils-r1 toolchain-funcs
 
-MY_P="Python-${PV/_/}"
-PATCHSET_VERSION="3.4.6-0"
+MY_P="Python-${PV}"
+PATCHSET_VERSION="3.7.3-0"
 
 DESCRIPTION="An interpreted, interactive, object-oriented programming language"
 HOMEPAGE="https://www.python.org/"
-SRC_URI="https://www.python.org/ftp/python/${PV%_rc*}/${MY_P}.tar.xz
-	https://dev.gentoo.org/~floppym/python/python-gentoo-patches-${PATCHSET_VERSION}.tar.xz"
+SRC_URI="https://www.python.org/ftp/python/${PV}/${MY_P}.tar.xz
+	https://dev.gentoo.org/~mgorny/dist/python-gentoo-patches-${PATCHSET_VERSION}.tar.xz"
 
 LICENSE="PSF-2"
-SLOT="3.4/3.4m"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
-IUSE="bluetooth build elibc_uclibc examples gdbm hardened ipv6 libressl +ncurses +readline sqlite +ssl +threads tk wininst +xml"
+SLOT="3.7/3.7m"
+KEYWORDS="*"
+IUSE="bluetooth build examples gdbm hardened ipv6 libressl +ncurses +readline sqlite +ssl test tk wininst +xml"
+RESTRICT="!test? ( test )"
 
 # Do not add a dependency on dev-lang/python to this ebuild.
 # If you need to apply a patch which requires python for bootstrapping, please
@@ -26,18 +27,17 @@ IUSE="bluetooth build elibc_uclibc examples gdbm hardened ipv6 libressl +ncurses
 
 RDEPEND="app-arch/bzip2:0=
 	app-arch/xz-utils:0=
+	sys-apps/util-linux:0=
 	>=sys-libs/zlib-1.1.3:0=
-	virtual/libffi
+	virtual/libffi:=
 	virtual/libintl
 	gdbm? ( sys-libs/gdbm:0=[berkdb] )
-	ncurses? (
-		>=sys-libs/ncurses-5.2:0=
-		readline? ( >=sys-libs/readline-4.1:0= )
-	)
+	ncurses? ( >=sys-libs/ncurses-5.2:0= )
+	readline? ( >=sys-libs/readline-4.1:0= )
 	sqlite? ( >=dev-db/sqlite-3.3.8:3= )
 	ssl? (
 		!libressl? ( dev-libs/openssl:0= )
-		libressl? ( dev-libs/libressl:= )
+		libressl? ( dev-libs/libressl:0= )
 	)
 	tk? (
 		>=dev-lang/tcl-8.0:0=
@@ -50,14 +50,13 @@ RDEPEND="app-arch/bzip2:0=
 # bluetooth requires headers from bluez
 DEPEND="${RDEPEND}
 	bluetooth? ( net-wireless/bluez )
+	test? ( app-arch/xz-utils[extra-filters(+)] )
 	virtual/pkgconfig
-	>=sys-devel/autoconf-2.65
 	!sys-devel/gcc[libffi(-)]"
 RDEPEND+=" !build? ( app-misc/mime-types )"
 PDEPEND=">=app-eselect/eselect-python-20140125-r1"
 
 S="${WORKDIR}/${MY_P}"
-
 PYVER=${SLOT%/*}
 
 src_prepare() {
@@ -66,30 +65,13 @@ src_prepare() {
 	rm -fr Modules/_ctypes/libffi*
 	rm -fr Modules/zlib
 
-	if tc-is-cross-compiler; then
-		# Invokes BUILDPYTHON, which is built for the host arch
-		local EPATCH_EXCLUDE="*_regenerate_platform-specific_modules.patch"
-	fi
+	local PATCHES=(
+		"${WORKDIR}/patches"
+	)
 
-	EPATCH_SUFFIX="patch" epatch "${WORKDIR}/patches"
-	epatch "${FILESDIR}/${PN}-3.4.3-ncurses-pkg-config.patch"
-	epatch "${FILESDIR}/${PN}-3.4.5-cross.patch"
-	epatch "${FILESDIR}/3.4-getentropy-linux.patch"
-	epatch "${FILESDIR}/3.6-disable-nis.patch"
-	epatch "${FILESDIR}/python-3.5.5-hash-unaligned.patch"
-
-	epatch_user
+	default
 
 	sed -i -e "s:@@GENTOO_LIBDIR@@:$(get_libdir):g" \
-		configure.ac \
-		Lib/distutils/command/install.py \
-		Lib/distutils/sysconfig.py \
-		Lib/site.py \
-		Lib/sysconfig.py \
-		Lib/test/test_site.py \
-		Makefile.pre.in \
-		Modules/Setup.dist \
-		Modules/getpath.c \
 		setup.py || die "sed failed to replace @@GENTOO_LIBDIR@@"
 
 	eautoreconf
@@ -133,56 +115,40 @@ src_configure() {
 	# Export CXX so it ends up in /usr/lib/python3.X/config/Makefile.
 	tc-export CXX
 
-	# The configure script fails to use pkg-config correctly.
-	# http://bugs.python.org/issue15506
-	export ac_cv_path_PKG_CONFIG=$(tc-getPKG_CONFIG)
-
 	# Set LDFLAGS so we link modules with -lpython3.2 correctly.
 	# Needed on FreeBSD unless Python 3.2 is already installed.
 	# Please query BSD team before removing this!
 	append-ldflags "-L."
+
+	# Fix implicit declarations on cross and prefix builds. Bug #674070.
+	use ncurses && append-cppflags -I"${ESYSROOT}"/usr/include/ncursesw
 
 	local dbmliborder
 	if use gdbm; then
 		dbmliborder+="${dbmliborder:+:}gdbm"
 	fi
 
-	BUILD_DIR="${WORKDIR}/${CHOST}"
-	mkdir -p "${BUILD_DIR}" || die
-	cd "${BUILD_DIR}" || die
-
-	ECONF_SOURCE="${S}" OPT="" \
-	econf \
-		--with-fpectl \
-		--enable-shared \
-		$(use_enable ipv6) \
-		$(use_with threads) \
-		--infodir='${prefix}/share/info' \
-		--mandir='${prefix}/share/man' \
-		--with-computed-gotos \
-		--with-dbmliborder="${dbmliborder}" \
-		--with-libc="" \
-		--enable-loadable-sqlite-extensions \
-		--with-system-expat \
-		--with-system-ffi \
+	local myeconfargs=(
+		--enable-shared
+		$(use_enable ipv6)
+		--infodir='${prefix}/share/info'
+		--mandir='${prefix}/share/man'
+		--with-computed-gotos
+		--with-dbmliborder="${dbmliborder}"
+		--with-libc=
+		--enable-loadable-sqlite-extensions
 		--without-ensurepip
+		--with-system-expat
+		--with-system-ffi
+	)
 
-	if use threads && grep -q "#define POSIX_SEMAPHORES_NOT_ENABLED 1" pyconfig.h; then
-		eerror "configure has detected that the sem_open function is broken."
-		eerror "Please ensure that /dev/shm is mounted as a tmpfs with mode 1777."
-		die "Broken sem_open function (bug 496328)"
-	fi
+	OPT="" econf "${myeconfargs[@]}"
 }
 
 src_compile() {
 	# Ensure sed works as expected
 	# https://bugs.gentoo.org/594768
 	local -x LC_ALL=C
-
-	# Avoid invoking pgen for cross-compiles.
-	touch Include/graminit.h Python/graminit.c || die
-
-	cd "${BUILD_DIR}" || die
 
 	emake CPPFLAGS= CFLAGS= LDFLAGS=
 
@@ -201,8 +167,6 @@ src_test() {
 		return
 	fi
 
-	cd "${BUILD_DIR}" || die
-
 	# Skip failing tests.
 	local skipped_tests="gdb"
 
@@ -210,7 +174,11 @@ src_test() {
 		mv "${S}"/Lib/test/test_${test}.py "${T}"
 	done
 
+	# bug 660358
+	local -x COLUMNS=80
+
 	local -x PYTHONDONTWRITEBYTECODE=
+
 	emake test EXTRATESTOPTS="-u-network" CPPFLAGS= CFLAGS= LDFLAGS= < /dev/tty
 	local result=$?
 
@@ -224,7 +192,7 @@ src_test() {
 	done
 
 	elog "If you would like to run them, you may:"
-	elog "cd '${EPREFIX}/usr/$(get_libdir)/python${PYVER}/test'"
+	elog "cd '${EPREFIX}/usr/lib/python${PYVER}/test'"
 	elog "and run the tests separately."
 
 	if [[ ${result} -ne 0 ]]; then
@@ -233,9 +201,7 @@ src_test() {
 }
 
 src_install() {
-	local libdir=${ED}/usr/$(get_libdir)/python${PYVER}
-
-	cd "${BUILD_DIR}" || die
+	local libdir=${ED%/}/usr/lib/python${PYVER}
 
 	emake DESTDIR="${D}" altinstall
 
@@ -245,13 +211,13 @@ src_install() {
 		-i "${libdir}/config-${PYVER}"*/Makefile || die "sed failed"
 
 	# Fix collisions between different slots of Python.
-	rm -f "${ED}usr/$(get_libdir)/libpython3.so"
+	rm -f "${ED%/}/usr/$(get_libdir)/libpython3.so"
 
 	# Cheap hack to get version with ABIFLAGS
-	local abiver=$(cd "${ED}usr/include"; echo python*)
+	local abiver=$(cd "${ED%/}/usr/include"; echo python*)
 	if [[ ${abiver} != python${PYVER} ]]; then
 		# Replace python3.X with a symlink to python3.Xm
-		rm "${ED}usr/bin/python${PYVER}" || die
+		rm "${ED%/}/usr/bin/python${PYVER}" || die
 		dosym "${abiver}" "/usr/bin/python${PYVER}"
 		# Create python3.X-config symlink
 		dosym "${abiver}-config" "/usr/bin/python${PYVER}-config"
@@ -259,12 +225,18 @@ src_install() {
 		dosym "python-${PYVER}.pc" "/usr/$(get_libdir)/pkgconfig/${abiver/${PYVER}/-${PYVER}}.pc"
 	fi
 
-	use elibc_uclibc && rm -fr "${libdir}/test"
-	use sqlite || rm -fr "${libdir}/"{sqlite3,test/test_sqlite*}
-	use tk || rm -fr "${ED}usr/bin/idle${PYVER}" "${libdir}/"{idlelib,tkinter,test/test_tk*}
+	# python seems to get rebuilt in src_install (bug 569908)
+	# Work around it for now.
+	if has_version dev-libs/libffi[pax_kernel]; then
+		pax-mark E "${ED%/}/usr/bin/${abiver}"
+	else
+		pax-mark m "${ED%/}/usr/bin/${abiver}"
+	fi
 
-	use threads || rm -fr "${libdir}/multiprocessing"
-	use wininst || rm -f "${libdir}/distutils/command/"wininst-*.exe
+	use sqlite || rm -r "${libdir}/"{sqlite3,test/test_sqlite*} || die
+	use tk || rm -r "${ED%/}/usr/bin/idle${PYVER}" "${libdir}/"{idlelib,tkinter,test/test_tk*} || die
+
+	use wininst || rm "${libdir}/distutils/command/"wininst-*.exe || die
 
 	dodoc "${S}"/Misc/{ACKS,HISTORY,NEWS}
 
@@ -283,7 +255,7 @@ src_install() {
 	sed \
 		-e "s:@PYDOC_PORT_VARIABLE@:PYDOC${PYVER/./_}_PORT:" \
 		-e "s:@PYDOC@:pydoc${PYVER}:" \
-		-i "${ED}etc/conf.d/pydoc-${PYVER}" "${ED}etc/init.d/pydoc-${PYVER}" || die "sed failed"
+		-i "${ED%/}/etc/conf.d/pydoc-${PYVER}" "${ED%/}/etc/init.d/pydoc-${PYVER}" || die "sed failed"
 
 	# for python-exec
 	local vars=( EPYTHON PYTHON_SITEDIR PYTHON_SCRIPTDIR )
@@ -302,33 +274,26 @@ src_install() {
 
 	# python-exec wrapping support
 	local pymajor=${PYVER%.*}
-	mkdir -p "${D}${PYTHON_SCRIPTDIR}" || die
+	mkdir -p "${D%/}${PYTHON_SCRIPTDIR}" || die
 	# python and pythonX
-	ln -s "../../../bin/${abiver}" \
-		"${D}${PYTHON_SCRIPTDIR}/python${pymajor}" || die
-	ln -s "python${pymajor}" \
-		"${D}${PYTHON_SCRIPTDIR}/python" || die
+	ln -s "../../../bin/${abiver}" "${D%/}${PYTHON_SCRIPTDIR}/python${pymajor}" || die
+	ln -s "python${pymajor}" "${D%/}${PYTHON_SCRIPTDIR}/python" || die
 	# python-config and pythonX-config
 	# note: we need to create a wrapper rather than symlinking it due
 	# to some random dirname(argv[0]) magic performed by python-config
-	cat > "${D}${PYTHON_SCRIPTDIR}/python${pymajor}-config" <<-EOF || die
+	cat > "${D%/}${PYTHON_SCRIPTDIR}/python${pymajor}-config" <<-EOF || die
 		#!/bin/sh
 		exec "${abiver}-config" "\${@}"
 	EOF
-	chmod +x "${D}${PYTHON_SCRIPTDIR}/python${pymajor}-config" || die
-	ln -s "python${pymajor}-config" \
-		"${D}${PYTHON_SCRIPTDIR}/python-config" || die
+	chmod +x "${D%/}${PYTHON_SCRIPTDIR}/python${pymajor}-config" || die
+	ln -s "python${pymajor}-config" "${D%/}${PYTHON_SCRIPTDIR}/python-config" || die
 	# 2to3, pydoc, pyvenv
-	ln -s "../../../bin/2to3-${PYVER}" \
-		"${D}${PYTHON_SCRIPTDIR}/2to3" || die
-	ln -s "../../../bin/pydoc${PYVER}" \
-		"${D}${PYTHON_SCRIPTDIR}/pydoc" || die
-	ln -s "../../../bin/pyvenv-${PYVER}" \
-		"${D}${PYTHON_SCRIPTDIR}/pyvenv" || die
+	ln -s "../../../bin/2to3-${PYVER}" "${D%/}${PYTHON_SCRIPTDIR}/2to3" || die
+	ln -s "../../../bin/pydoc${PYVER}" "${D%/}${PYTHON_SCRIPTDIR}/pydoc" || die
+	ln -s "../../../bin/pyvenv-${PYVER}" "${D%/}${PYTHON_SCRIPTDIR}/pyvenv" || die
 	# idle
 	if use tk; then
-		ln -s "../../../bin/idle${PYVER}" \
-			"${D}${PYTHON_SCRIPTDIR}/idle" || die
+		ln -s "../../../bin/idle${PYVER}" "${D%/}${PYTHON_SCRIPTDIR}/idle" || die
 	fi
 }
 
@@ -339,11 +304,11 @@ pkg_preinst() {
 }
 
 eselect_python_update() {
-	if [[ -z "$(eselect python show)" || ! -f "${EROOT}usr/bin/$(eselect python show)" ]]; then
+	if [[ -z "$(eselect python show)" || ! -f "${EROOT%/}/usr/bin/$(eselect python show)" ]]; then
 		eselect python update
 	fi
 
-	if [[ -z "$(eselect python show --python${PV%%.*})" || ! -f "${EROOT}usr/bin/$(eselect python show --python${PV%%.*})" ]]; then
+	if [[ -z "$(eselect python show --python${PV%%.*})" || ! -f "${EROOT%/}/usr/bin/$(eselect python show --python${PV%%.*})" ]]; then
 		eselect python update --python${PV%%.*}
 	fi
 }
