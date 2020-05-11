@@ -28,7 +28,6 @@ IUSE="-berkdb bluetooth build elibc_uclibc examples gdbm hardened ipv6 libressl 
 RDEPEND="app-arch/bzip2:=
 	dev-libs/libffi:=
 	>=sys-libs/zlib-1.1.3:=
-	sys-libs/libxcrypt
 	virtual/libintl
 	berkdb? ( || (
 		sys-libs/db:5.3
