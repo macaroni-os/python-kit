@@ -207,6 +207,8 @@ src_test() {
 }
 
 src_install() {
+	# See FL-9599:
+	addpredict "${EPREFIX}/usr/$(get_libdir)/python-3.7"
 	local libdir=${ED}/usr/lib/python${PYVER}
 
 	emake DESTDIR="${D}" altinstall
