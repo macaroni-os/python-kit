@@ -11,8 +11,8 @@ PATCHSET="python-gentoo-patches-${PV}"
 
 DESCRIPTION="An interpreted, interactive, object-oriented programming language"
 HOMEPAGE="https://www.python.org/"
-SRC_URI="https://www.python.org/ftp/python/3.9.12/Python-3.9.12.tar.xz
-		https://dev.gentoo.org/~mgorny/dist/python/python-gentoo-patches-3.9.12.tar.xz"
+SRC_URI="https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tar.xz
+		https://dev.gentoo.org/~mgorny/dist/python/python-gentoo-patches-3.9.13.tar.xz"
 
 S="${WORKDIR}/${MY_P}"
 
