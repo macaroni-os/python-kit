@@ -12,5 +12,5 @@ RDEPEND=app-arch/bzip2:= app-arch/xz-utils:= dev-libs/libffi:= sys-apps/util-lin
 RESTRICT=!test? ( test )
 SLOT=3.9
 SRC_URI=https://www.python.org/ftp/python/3.9.16/Python-3.9.16.tar.xz -> Python-3.9.16.tar.xz
-_eclasses_=autotools	5223f703a2e9c194fcda924f8c4b6baf	check-reqs	2c6f909675083dce8430b648bf737cb0	eapi8-dosym	cd7d420bb5be5ee079f27239ce76b8f5	eutils	6e6c2737b59a4b982de6fb3ecefd87f8	flag-o-matic	a09389deba2c0a7108b581e02c7cecbf	libtool	f143db5a74ccd9ca28c1234deffede96	multilib	d410501a125f99ffb560b0c523cd3d1e	multiprocessing	cac3169468f893670dac3e7cb940e045	pax-utils	db85a3c508cf82c45f24b2723791cc93	python-utils-r1	32393cac272daca4c136cc44e6005b67	toolchain-funcs	24921b57d6561d87cbef4916a296ada4
+_eclasses_=autotools	5223f703a2e9c194fcda924f8c4b6baf	check-reqs	2c6f909675083dce8430b648bf737cb0	eapi8-dosym	cd7d420bb5be5ee079f27239ce76b8f5	eutils	6e6c2737b59a4b982de6fb3ecefd87f8	flag-o-matic	d0939f99dd528dd0c5ec25284877bf5c	libtool	f143db5a74ccd9ca28c1234deffede96	multilib	d410501a125f99ffb560b0c523cd3d1e	multiprocessing	cac3169468f893670dac3e7cb940e045	pax-utils	db85a3c508cf82c45f24b2723791cc93	python-utils-r1	32393cac272daca4c136cc44e6005b67	toolchain-funcs	24921b57d6561d87cbef4916a296ada4
 _md5_=63c36fa5b4e8f79ae79d1de01cfb991b
