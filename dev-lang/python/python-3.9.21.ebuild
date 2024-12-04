@@ -10,7 +10,7 @@ PYVER=$(ver_cut 1-2)
 
 DESCRIPTION="An interpreted, interactive, object-oriented programming language"
 HOMEPAGE="https://www.python.org/"
-SRC_URI="https://www.python.org/ftp/python/3.10.15/Python-3.10.15.tar.xz -> Python-3.10.15.tar.xz"
+SRC_URI="https://www.python.org/ftp/python/3.9.21/Python-3.9.21.tar.xz -> Python-3.9.21.tar.xz"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -181,7 +181,6 @@ src_configure() {
 
 		$(use_with lto)
 		$(use_enable pgo optimizations)
-		$(use_with readline readline "$(usex libedit editline readline)")
 	)
 
 	# disable implicit optimization/debugging flags
@@ -214,7 +213,7 @@ src_compile() {
 		local -x COLUMNS=80
 		local -x PYTHONDONTWRITEBYTECODE=
 
-		addpredict /usr/lib/python3.10/site-packages
+		addpredict /usr/lib/python3.9/site-packages
 	fi
 
 	# also need to clear the flags explicitly here or they end up
@@ -247,7 +246,7 @@ src_test() {
 	local -x COLUMNS=80
 	local -x PYTHONDONTWRITEBYTECODE=
 	# workaround https://bugs.gentoo.org/775416
-	addwrite /usr/lib/python3.10/site-packages
+	addwrite /usr/lib/python3.9/site-packages
 
 	local jobs=$(makeopts_jobs "${MAKEOPTS}" "$(get_nproc)")
 
