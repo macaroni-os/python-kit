@@ -230,7 +230,7 @@ src_install() {
 	    "${scriptdir}/idle" || die
 	fi
 	# eselect-python requires compress man files
-	doman /share/man/man1/python3.9.1
+	doman "${ED}"/share/man/man1/python3.9.1
 	# remove uncompressed man files
 	rm -r "${ED}"/share/man
 }
