@@ -2,7 +2,7 @@
 # Autogen by MARK Devkit
 
 EAPI=7
-PYTHON_COMPAT=( python3+ )
+PYTHON_COMPAT=( python{3_9,3_10} )
 inherit python-any-r1
 
 DESCRIPTION="Wrapper for multi-implementation install of Python scripts and executables"
@@ -43,29 +43,22 @@ src_install() {
 
 }
 pkg_preinst() {
-	if [[ -e ${EROOT}etc/python-exec/python-exec.conf ]]; then
+	if [[ -e ${EROOT}/etc/python-exec/python-exec.conf ]]; then
 	  # preserve current configuration
-	  cp "${EROOT}"etc/python-exec/python-exec.conf \
-	    "${ED}"etc/python-exec/python-exec.conf || die
+	  cp "${EROOT}"/etc/python-exec/python-exec.conf \
+	    "${ED}"/etc/python-exec/python-exec.conf || die
 	else
-	  # preserve previous Python version preference
-	  local py old_pythons=()
-	  for py in 3; do
-	    local target=
-	    if [[ -L ${EROOT}/usr/bin/python${py} ]]; then
-	      # check the older symlink format
-	      target=$(readlink "${EROOT}/usr/bin/python${py}")
-	      [[ ${target} == python?.? ]] || target=
-	    fi
-	    if [[ ${target} && ${old_pythons[0]} != ${target} ]]; then
-	      old_pythons+=( "${target}" )
+	  local supported_versions=(
+	    python3.9
+	    python3.10
+	  )
+	  local pyimpls=() i
+	   for i in ${supported_versions[@]} ; do
+	    if use "python_targets_${i}" ; then
+	      echo "${i}" >> "${ED}"/etc/python-exec/python-exec.conf || die
 	    fi
 	  done
-	  if [[ ${old_pythons[@]} ]]; then
-	    echo "${old_pythons[*]}" \
-	      >> "${ED}"etc/python-exec/python-exec.conf || die
-	  fi
-	fi
+	 fi
 }
 
 
