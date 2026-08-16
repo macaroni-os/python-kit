@@ -1,0 +1,276 @@
+# Distributed under the terms of the GNU General Public License v2
+# Autogen by MARK Devkit
+
+EAPI=7
+WANT_LIBTOOL="none"
+inherit autotools flag-o-matic pax-utils python-utils-r1 toolchain-funcs
+
+DESCRIPTION="An interpreted, interactive, object-oriented programming language"
+SRC_URI="https://www.python.org/ftp/python/3.10.21/Python-3.10.21.tar.xz -> Python-3.10.21.tar.xz"
+LICENSE="PSF-2"
+SLOT="3.10"
+KEYWORDS="*"
+PATCHES=(
+	"${FILESDIR}/3.10/0004-Improve-distutils-C-support.patch"
+	"${FILESDIR}/3.10/0007-Install-shared-libs-in-LIBDEST.patch"
+	"${FILESDIR}/3.10/0011-bpo-45433-Do-not-link-libpython-against-libcrypt.patch"
+)
+IUSE="bluetooth build examples gdbm hardened libedit lto
++ncurses pgo +readline +sqlite +ssl tk wininst +xml
+"
+# Commons depends
+CDEPEND="app-arch/bzip2:=
+	app-arch/xz-utils:=
+	dev-libs/libffi:=
+	sys-apps/util-linux:=
+	sys-libs/zlib:=
+	virtual/libintl
+	gdbm? ( sys-libs/gdbm:=[berkdb] )
+	ncurses? ( sys-libs/ncurses:= )
+	readline? (
+	  !libedit? ( sys-libs/readline:= )
+	  libedit? ( dev-libs/libedit:= )
+	)
+	sqlite? ( dev-db/sqlite:3= )
+	dev-libs/openssl:=
+	tk? (
+	  dev-lang/tcl:=
+	  dev-lang/tk:=
+	  dev-tcltk/blt:=
+	  dev-tcltk/tix
+	)
+	xml? ( dev-libs/expat:= )
+	
+"
+BDEPEND="sys-devel/autoconf-archive
+	virtual/awk
+	virtual/pkgconfig
+	
+"
+RDEPEND="${CDEPEND}
+	!build? ( app-misc/mime-types )
+	
+"
+DEPEND="${CDEPEND}
+	bluetooth? ( net-wireless/bluez )
+	
+"
+PDEPEND="app-eselect/eselect-python
+	
+"
+S="${WORKDIR}/Python-3.10.21"
+src_prepare() {
+	# Ensure that internal copies of expat, libffi and
+	# zlib are not used.
+	rm -fr Modules/expat || die
+	rm -fr Modules/_ctypes/libffi* || die
+	rm -fr Modules/zlib || die
+	default
+
+	# Disable NIS support
+	sed -i -e '/self.detect_nis()/d' setup.py || die
+	# Review installation paths
+	sed -i -e "s|/usr/local/lib|/usr/local/$(get_libdir)|g" \
+		-e "s|/usr/lib/termcap|/usr/$(get_libdir)/termcap|g" \
+		-e "/db_incdir.replace(\"include\", 'lib64/d" \
+		-e "s|db_incdir.replace(\"include\", 'lib64')|db_incdir.replace(\"include\", '$(get_libdir)')|g" \
+		-e "s|system_lib_dirs =.*|system_lib_dirs = ['/$(get_libdir)', '/usr/$(get_libdir)']|g" \
+		setup.py || die
+
+
+	local jobs=$(makeopts_jobs "${MAKEOPTS}" "$(get_nproc)")
+	sed -i -e "s:-j0:-j${jobs}:" Makefile.pre.in || die
+	sed -i -e "/self\.parallel/s:True:${jobs}:" setup.py || die
+	eautoreconf
+}
+src_configure() {
+	local disable
+	use bluetooth || export ac_cv_header_bluetooth_bluetooth_h=no
+	use gdbm      || disable+=" gdbm"
+	use ncurses   || disable+=" _curses _curses_panel"
+	use readline  || disable+=" readline"
+	use sqlite    || disable+=" _sqlite3"
+	use tk        || disable+=" _tkinter"
+	use xml       || disable+=" _elementtree pyexpat" # _elementtree uses pyexpat.
+	export PYTHON_DISABLE_MODULES="${disable}"
+	if [[ -n "${PYTHON_DISABLE_MODULES}" ]]; then
+		einfo "Disabled modules: ${PYTHON_DISABLE_MODULES}"
+	fi
+	append-flags -fwrapv
+	filter-flags -malign-double
+
+	tc-export CXX
+
+	use ncurses && append-cppflags -I/usr/include/ncursesw
+
+	local dbmliborder
+	if use gdbm; then
+		dbmliborder+="${dbmliborder:+:}gdbm"
+	fi
+
+	if use pgo; then
+		local jobs=$(makeopts_jobs "${MAKEOPTS}" "$(get_nproc)")
+		export PROFILE_TASK="-m test -j${jobs} --pgo-extended -x test_gdb -u-network"
+
+		PROFILE_TASK+=" -x test_socket -x test_asyncio -x test_httpservers -x test_logging -x test_multiprocessing_fork -x test_xmlrpc"
+
+		if has_version "app-arch/rpm" ; then
+			# Avoid sandbox failure (attempts to write to /var/lib/rpm)
+			PROFILE_TASK+=" -x test_distutils"
+		fi
+	fi
+	local myeconfargs=(
+		--enable-shared
+		--enable-ipv6
+		--infodir='/share/info'
+		--mandir='/share/man'
+		--with-computed-gotos
+		--with-dbmliborder="${dbmliborder}"
+		--with-libc=
+		--enable-loadable-sqlite-extensions
+		--without-ensurepip
+		--with-system-expat
+		--with-system-ffi
+		$(use_with lto)
+		$(use_enable pgo optimizations)
+	)
+	# disable implicit optimization/debugging flags
+	local -x OPT=
+	# pass system CFLAGS & LDFLAGS as _NODIST, otherwise they'll get
+	# propagated to sysconfig for built extensions
+	local -x CFLAGS_NODIST=${CFLAGS}
+	local -x LDFLAGS_NODIST=${LDFLAGS}
+	local -x CFLAGS= LDFLAGS=
+
+	econf "${myeconfargs[@]}"
+}
+src_compile() {
+	local -x LC_ALL=C
+	# Prevent using distutils bundled by setuptools.
+	export SETUPTOOLS_USE_DISTUTILS=stdlib
+	if use pgo ; then
+		local -x COLUMNS=80
+		local -x PYTHONDONTWRITEBYTECODE=
+		addpredict /usr/lib/python3.10/site-packages
+	fi
+	# we set them via NODIST to not propagate them and duplicate them to modules
+	unset LDFLAGS CFLAGS CXXFLAGS CPPFLAGS
+	emake
+	if has_version dev-libs/libffi[pax_kernel]; then
+		pax-mark E python
+	else
+		pax-mark m python
+	fi
+}
+src_install() {
+	local libdir=${ED}/usr/lib/python3.10
+	emake DESTDIR="${D}" altinstall
+	# Fix collisions between different slots of Python.
+	rm "${ED}/usr/$(get_libdir)/libpython3.so" || die
+	# Cheap hack to get version with ABIFLAGS
+	local abiver=$(cd "${ED}/usr/include"; echo python*)
+	if [[ ${abiver} != python3.10 ]]; then
+		# Replace python3.X with a symlink to python3.Xm
+		rm "${ED}/usr/bin/python3.10" || die
+		dosym "${abiver}" "/usr/bin/python3.10"
+		# Create python3.X-config symlink
+		dosym "${abiver}-config" "/usr/bin/python3.10-config"
+		# Create python-3.5m.pc symlink
+		dosym "python-3.10.pc" "/usr/$(get_libdir)/pkgconfig/${abiver/3.10/-3.10}.pc"
+	fi
+	if has_version dev-libs/libffi[pax_kernel]; then
+		pax-mark E "${ED}/usr/bin/${abiver}"
+	else
+		pax-mark m "${ED}/usr/bin/${abiver}"
+	fi
+	use sqlite || rm -r "${libdir}/"{sqlite3,test/test_sqlite*} || die
+	use tk || rm -r "${ED}/usr/bin/idle3.10" "${libdir}/"{idlelib,tkinter,test/test_tk*} || die
+
+	dodoc Misc/{ACKS,HISTORY,NEWS}
+	if use examples; then
+		docinto examples
+		find Tools -name __pycache__ -exec rm -fr {} + || die
+		dodoc -r Tools
+	fi
+	insinto /usr/share/gdb/auto-load/usr/$(get_libdir) #443510
+	local libname=$(printf 'e:\n\t@echo $(INSTSONAME)\ninclude Makefile\n' | \
+		emake --no-print-directory -s -f - 2>/dev/null)
+	newins "${S}"/Tools/gdb/libpython.py "${libname}"-gdb.py
+	newconfd "${FILESDIR}/pydoc.conf" pydoc-3.10
+	newinitd "${FILESDIR}/pydoc.init" pydoc-3.10
+	sed \
+		-e "s:@PYDOC_PORT_VARIABLE@:PYDOC3_10_PORT:" \
+		-e "s:@PYDOC@:pydoc3.10:" \
+		-i "${ED}/etc/conf.d/pydoc-3.10" \
+		"${ED}/etc/init.d/pydoc-3.10" || die "sed failed"
+	local -x EPYTHON=python3.10
+	# if not using a cross-compiler, use the fresh binary
+	if ! tc-is-cross-compiler; then
+		local -x PYTHON=./python
+		local -x LD_LIBRARY_PATH=${LD_LIBRARY_PATH+${LD_LIBRARY_PATH}:}${PWD}
+	else
+		local -x PYTHON=${EPREFIX}/usr/bin/${EPYTHON}
+	fi
+	echo "EPYTHON='${EPYTHON}'" > epython.py || die
+	python_domodule epython.py
+	# python-exec wrapping support
+	local pymajor=3
+	local scriptdir=${D}$(python_get_scriptdir)
+	mkdir -p "${scriptdir}" || die
+	# python and pythonX
+	ln -s "../../../bin/${abiver}" \
+		"${scriptdir}/python${pymajor}" || die
+	ln -s "python${pymajor}" "${scriptdir}/python" || die
+	# python-config and pythonX-config
+	# note: we need to create a wrapper rather than symlinking it due
+	# to some random dirname(argv[0]) magic performed by python-config
+	echo '#!/bin/sh' > "${scriptdir}/python${pymajor}-config"
+	echo "exec \"${abiver}-config\" \"\${@}\"" >> "${scriptdir}/python${pymajor}-config"
+	chmod +x "${scriptdir}/python${pymajor}-config" || die
+	ln -s "python${pymajor}-config" \
+		"${scriptdir}/python-config" || die
+	# 2to3, pydoc
+	ln -s "../../../bin/2to3-3.10" \
+		"${scriptdir}/2to3" || die
+	ln -s "../../../bin/pydoc3.10" \
+		"${scriptdir}/pydoc" || die
+	# idle
+	if use tk; then
+		ln -s "../../../bin/idle3.10" \
+			"${scriptdir}/idle" || die
+	fi
+	# eselect-python requires compress man files
+	doman "${ED}"/share/man/man1/python3.10.1
+	# remove uncompressed man files
+	rm -r "${ED}"/share/man
+}
+pkg_preinst() {
+	if has_version "<${CATEGORY}/${PN}-3.10" ; then
+		python_updater_warning="1"
+	fi
+}
+eselect_python_update() {
+	if [[ -z "$(eselect python show)" || \
+			! -f "${EROOT}/usr/bin/$(eselect python show)" ]]; then
+		eselect python update
+	fi
+	if [[ -z "$(eselect python show --python${PV%%.*})" || \
+			! -f "${EROOT}/usr/bin/$(eselect python show --python${PV%%.*})" ]]
+	then
+		eselect python update --python${PV%%.*}
+	fi
+}
+pkg_postinst() {
+	eselect_python_update
+	if [[ "${python_updater_warning}" == "1" ]]; then
+		ewarn "You have just upgraded from an older version of Python."
+		ewarn
+		ewarn "Please adjust PYTHON_TARGETS (if so desired), and run emerge with the --newuse or --changed-use option to rebuild packages installing python modules."
+	fi
+}
+pkg_postrm() {
+	eselect_python_update
+}
+
+
+# vim: filetype=ebuild
