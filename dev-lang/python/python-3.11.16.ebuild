@@ -131,6 +131,8 @@ src_configure() {
 		--with-computed-gotos
 		--with-dbmliborder="${dbmliborder}"
 		--with-libc=
+		--enable-lib-dynload
+		--with-platlibdir=lib
 		--enable-loadable-sqlite-extensions
 		--without-ensurepip
 		--with-system-expat
