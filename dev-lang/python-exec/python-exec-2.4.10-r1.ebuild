@@ -2,7 +2,7 @@
 # Autogen by MARK Devkit
 
 EAPI=7
-PYTHON_COMPAT=( python{3_9,3_10} )
+PYTHON_COMPAT=( python{3_9,3_10,3_11} )
 inherit python-any-r1
 
 DESCRIPTION="Wrapper for multi-implementation install of Python scripts and executables"
@@ -14,6 +14,7 @@ KEYWORDS="*"
 IUSE="
 python_targets_python3_9
 python_targets_python3_10
+python_targets_python3_11
 "
 src_configure() {
 	local pyimpls=() i EPYTHON
